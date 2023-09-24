@@ -1,0 +1,3 @@
+pandas 
+SentenceTransformers
+pinecone-client
