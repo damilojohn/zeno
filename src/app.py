@@ -4,7 +4,7 @@ import logging
 import json
 from sentence_transformers import SentenceTransformer
 
-encoder = SentenceTransformer(os.getenv('ENCODER_NAME'))
+encoder = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -35,7 +35,7 @@ def lambda_handler(event, _context):
         query = event['body']['query']
     except TypeError:
         request = json.loads(event['body'])
-        query - request['query']
+        query = request['query']
     if query is None:
         return {'statusCode': 400, 'message': 'no input query was provided'}
     results = query_db(index=index, query=query)
