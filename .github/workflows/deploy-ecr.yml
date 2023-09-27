@@ -34,8 +34,8 @@ jobs:
             ls 
             pwd
             docker build -t zeno . --platform=linux/amd64
-            docker tag zeno:latest $ECR_REPO_URI/ECR_REPO_NAME:latest 
-            docker push 547882234658.dkr.ecr.us-east-1.amazonaws.com/zeno
+            docker tag zeno:latest 547882234658.dkr.ecr.us-east-1.amazonaws.com/zeno:latest
+            docker push 547882234658.dkr.ecr.us-east-1.amazonaws.com/zeno:latest
           env: 
             $ECR_REPO_URI: ${{ secrets.ECR_REPO_URI }}
             $ECR_REPO_NAME: ${{ secrets.ECR_REPO_NAME }}
