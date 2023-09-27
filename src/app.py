@@ -7,7 +7,7 @@ from sentence_transformers import SentenceTransformer
 encoder = SentenceTransformer(os.getenv('ENCODER_NAME'))
 
 logger = logging.getLogger()
-logger.setLevel(logging.info)
+logger.setLevel(logging.INFO)
 logger.info('connecting to vectordb')
 pinecone.init(
     api_key=os.getenv('PINECONE_API_KEY'),
