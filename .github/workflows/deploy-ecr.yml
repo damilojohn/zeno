@@ -1,9 +1,9 @@
 name: "build docker image-ecr"
 on:
     push:
-        branches: ['main']
+        branches: ['empty']
     pull_request:
-        branches: ['main']
+        branches: ['empty']
 permissions:
     contents: read
     id-token: write

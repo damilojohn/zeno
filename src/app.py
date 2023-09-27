@@ -19,8 +19,10 @@ logger.info('connected to index....')
 
 
 def query_db(index, query):
+    logger.info('generating query embeddings....')
     query_vec = encoder.encode(query).tolist()
-    matches = index.query(query, top_k=10, include_metadata=True)
+    logger.info('performing semantic search')
+    matches = index.query(query_vec, top_k=10, include_metadata=True)
     results = []
     for result in matches['matches']:
         results.append(result)
