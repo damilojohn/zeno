@@ -1,23 +1,23 @@
 name: "build docker image-ecr"
 on:
     push:
-        branches: ['empty']
+        branches: ['master','main']
     pull_request:
-        branches: ['empty']
+        branches: ['master','main']
 permissions:
-    contents: read
-    id-token: write
+  contents: read
+  id-token: write
     
 jobs: 
     zeno:
-        name: Deploy to Production
-        runs-on: ubuntu-latest
-        environment: Production
+      name: 'zeno'
+      runs-on: ubuntu-latest
+      environment: production
 
-        defaults:
-            run:
-                shell: bash
-        steps: 
+      defaults:
+          run:
+              shell: bash
+      steps: 
         - uses: actions/checkout@v3
 
         - name: Authenticate with AWS(OIDC)
