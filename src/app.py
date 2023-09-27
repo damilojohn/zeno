@@ -23,10 +23,11 @@ def query_db(index, query):
     query_vec = encoder.encode(query).tolist()
     logger.info('performing semantic search...')
     matches = index.query(query_vec, top_k=10, include_metadata=True)
-    results = []
-    for result in matches['matches']:
-        results.append(result)
-    return results
+    matches = matches['matches']
+    response = []
+    for i in range(len(matches)):
+        response.append(matches[i]['metadata'])
+    return response        
 
 
 def lambda_handler(event, _context):
@@ -38,10 +39,10 @@ def lambda_handler(event, _context):
         query = request['query']
     if query is None:
         return {'statusCode': 400, 'message': 'no input query was provided'}
-    results = query_db(index=index, query=query)
+    response = query_db(index=index, query=query) 
     return {
         'body': json.dumps(
-            {'books': results}),
+            {'books': response}),
         'statusCode': 200,
         'headers':
             {'content-type': 'application/json'}
