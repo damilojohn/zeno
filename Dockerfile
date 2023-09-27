@@ -5,7 +5,7 @@ COPY /src/app.py .
 COPY requirements.txt .
 COPY .env . 
 
-RUN install torch --index-url https://download.pytorch.org/whl/cpu 
+RUN pip install torch --index-url https://download.pytorch.org/whl/cpu 
 RUN pip install -r requirements.txt 
 
 ENV XDG_CACHE_HOME = /tmp
