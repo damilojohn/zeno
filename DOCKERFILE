@@ -1,10 +1,9 @@
 FROM public.ecr.aws/lambda/python:3.10
 WORKDIR "${LAMBDA_TASK_ROOT}"
 
-COPY app.py . 
-COPY ./data/books.csv . 
+COPY /src/app.py .  
 COPY requirements.txt .
-COPY .env.example . 
+COPY .env . 
 
 
 RUN pip install -r requirements.txt 
@@ -13,5 +12,5 @@ RUN install torch --index-url https://download.pytorch.org/whl/cpu
 ENV XDG_CACHE_HOME = /tmp
 ENV HF_HOME = /tmp
 ENV TRANSFORMERS_CACHE = /tmp
-
+EXPOSE 5000
 CMD ["app.lambda_handler"]
