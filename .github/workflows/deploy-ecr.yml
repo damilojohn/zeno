@@ -31,7 +31,7 @@ jobs:
         - name: Deploy to ECR
           run: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 547882234658.dkr.ecr.us-east-1.amazonaws.com
-            docker build -t zeno . --platform=linux/x86 
+            docker build -t zeno . --platform=linux/amd64
             docker tag zeno:latest $ECR_REPO_URI/ECR_REPO_NAME:latest 
             docker push $ECR_REPO_URI/$ECR_REPO_NAME:latest
           env: 
