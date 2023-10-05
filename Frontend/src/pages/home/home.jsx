@@ -50,7 +50,7 @@ const Home = () => {
                         type="text"
                         value={userInput}
                         onChange={handleInputChange}
-                        placeholder='enter a text describing what you '
+                        placeholder='enter a text describing what you feel '
                         className='input'
                     />
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
