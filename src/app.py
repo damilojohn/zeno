@@ -27,7 +27,7 @@ def query_db(index, query):
     response = []
     for i in range(len(matches)):
         response.append(matches[i]['metadata'])
-    return response        
+    return response       
 
 
 def lambda_handler(event, _context):
@@ -39,11 +39,13 @@ def lambda_handler(event, _context):
         query = request['query']
     if query is None:
         return {'statusCode': 400, 'message': 'no input query was provided'}
-    response = query_db(index=index, query=query) 
+    response = query_db(index=index, query=query)
     return {
         'body': json.dumps(
             {'books': response}),
         'statusCode': 200,
         'headers':
-            {'content-type': 'application/json'}
+            {'content-type': 'application/json',
+             'Access-Control-Allow-Headers': '*',
+             'Access-Control-Allow-Methods': 'POST,OPTION'}
     }
