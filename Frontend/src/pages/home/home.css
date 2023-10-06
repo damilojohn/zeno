@@ -1,15 +1,11 @@
 .container {
     margin: 2rem 1rem 2rem 1rem;
-
-
-
     padding: 0;
     box-sizing: border-box;
     /* border: black 2px solid; */
 }
 
 .search {
-
     display: flex;
     flex-direction: column;
     margin: 1rem 3rem;
@@ -95,7 +91,33 @@ button:hover {
 /* .display-container .thumbnail img:hover {
     transform: scale(1.2);
 } */
-/* .credit{
+.credit {
     text-align: center;
 
-} */
+
+}
+
+.credit h2 {
+    font-weight: 500;
+    font-size: 32px;
+}
+
+.credit ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    padding: 0;
+    margin-right: 3rem;
+    /* font-size: large; */
+}
+
+.credit ul li {
+    font-size: 2rem;
+}
+
+.credit ul li a {
+    text-decoration: none;
+
+
+}
