@@ -77,6 +77,19 @@ const Home = () => {
 
                     </div>
                 </Suspense>
+                <footer>
+                    <div className='credit'>
+                        <h2>Credits</h2>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/damilojohn" >Damilola John </a> - Machine Learning Engineer
+                            </li>
+                            <li>
+                                <a href="https://github.com/mankinde23" >Makinde Damilola </a> - Software Developer
+                            </li>
+                        </ul>
+                    </div>
+                </footer>
             </div>
         </React.Fragment>
     )
