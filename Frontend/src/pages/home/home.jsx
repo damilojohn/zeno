@@ -82,10 +82,10 @@ const Home = () => {
                         <h2>Credits</h2>
                         <ul>
                             <li>
-                                <a href="https://github.com/damilojohn" >Damilola John </a> - Machine Learning Engineer
+                                <a href="https://github.com/damilojohn" target="_blank" rel="noopener noreferrer" >Damilola John </a> - Machine Learning Engineer
                             </li>
                             <li>
-                                <a href="https://github.com/mankinde23" >Makinde Damilola </a> - Software Developer
+                                <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a> - Software Developer
                             </li>
                         </ul>
                     </div>
