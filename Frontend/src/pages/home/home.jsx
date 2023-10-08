@@ -43,7 +43,7 @@ const Home = () => {
             <div className='container'>
                 <Header />
                 {/* <Preload loading={loading} /> */}
-                {/* <Loader loading={loading} /> */}
+                {loading && <Loader loading={loading} />}
 
                 <form className='search' action='#'>
                     <input
@@ -56,6 +56,7 @@ const Home = () => {
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
 
                 </form>
+                {/* {loading ? <p>loading ...</p> : */}
                 <Suspense fallback={<p>loading....</p>}>
 
                     <div className='main-container'>
@@ -77,6 +78,7 @@ const Home = () => {
 
                     </div>
                 </Suspense>
+                {/* } */}
                 <footer>
                     <div className='credit'>
                         <h2>Credits</h2>
