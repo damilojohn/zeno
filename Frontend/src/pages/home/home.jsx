@@ -43,19 +43,20 @@ const Home = () => {
             <div className='container'>
                 <Header />
                 {/* <Preload loading={loading} /> */}
-                {/* <Loader loading={loading} /> */}
+                {loading && <Loader loading={loading} />}
 
                 <form className='search' action='#'>
                     <input
                         type="text"
                         value={userInput}
                         onChange={handleInputChange}
-                        placeholder='enter a text describing what you '
+                        placeholder='enter a text describing what you feel '
                         className='input'
                     />
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
 
                 </form>
+                {/* {loading ? <p>loading ...</p> : */}
                 <Suspense fallback={<p>loading....</p>}>
 
                     <div className='main-container'>
@@ -77,6 +78,20 @@ const Home = () => {
 
                     </div>
                 </Suspense>
+                {/* } */}
+                <footer>
+                    <div className='credit'>
+                        <h2>Credits</h2>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/damilojohn" target="_blank" rel="noopener noreferrer" >Damilola John </a> - Machine Learning Engineer
+                            </li>
+                            <li>
+                                <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a> - Software Developer
+                            </li>
+                        </ul>
+                    </div>
+                </footer>
             </div>
         </React.Fragment>
     )

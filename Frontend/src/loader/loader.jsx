@@ -1,21 +1,20 @@
 import React from 'react'
-import { useState, } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
+import ScaleLoader from "react-spinners/ScaleLoader";
 import '../loader/loader.css'
 
 
 
 
-const Loader = ({ loading, color = 'red' }) => {
+const Loader = ({ loading, color = 'black' }) => {
     const override = {
         // display: "block",
         // margin: "0 auto",
         // borderColor: "red",
     };
-    // let [color, setColor] = useState("");
+
     return (
         <div className="sweet-loading">
-            <ClipLoader
+            <ScaleLoader
                 color={color}
                 loading={loading}
                 cssOverride={override}
