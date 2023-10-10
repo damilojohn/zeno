@@ -52,6 +52,8 @@ const Home = () => {
                         onChange={handleInputChange}
                         placeholder='enter a text describing what you feel '
                         className='input'
+                        id="query"
+                        name="query"
                     />
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
 
