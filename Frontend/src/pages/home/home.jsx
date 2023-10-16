@@ -58,13 +58,13 @@ const Home = () => {
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
 
                 </form>
-                {/* {loading ? <p>loading ...</p> : */}
+                
                 <Suspense fallback={<p>loading....</p>}>
 
                     <div className='main-container'>
                         {
                             data && data.books.map((item) => (
-                                <div className='display-container' key={item.isbn10}>
+                                <div className='display-container' key={item.isbn10} onClick={() => linkToNewPage(item.isbn10)}>
                                     <div className='title'>
                                         <p> {item.title} </p>
                                     </div>
@@ -80,7 +80,7 @@ const Home = () => {
 
                     </div>
                 </Suspense>
-                {/* } */}
+                
                 <footer>
                     <div className='credit'>
                         <h2>Credits</h2>
