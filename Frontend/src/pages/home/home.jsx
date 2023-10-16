@@ -4,12 +4,18 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import '../home/home.css'
 import Loader from '../../loader/loader'
+import { useHistory } from 'react-router-dom'
 
 const Home = () => {
     const [userInput, setUserInput] = useState('')
     const [loading, setLoading] = useState(false)
 
     const [data, setData] = useState(null)
+    // const history = useHistory()
+    // const linkToNewPage = () => {
+    //     history.push()
+
+    // }
     const handleInputChange = (e) => {
         e.preventDefault()
         setUserInput(e.target.value);
@@ -63,7 +69,7 @@ const Home = () => {
 
                     <div className='main-container'>
                         {
-                            data && data.books.map((item) => (
+                            data && data.books[0].map((item) => (
                                 <div className='display-container' key={item.isbn10}>
                                     <div className='title'>
                                         <p> {item.title} </p>
