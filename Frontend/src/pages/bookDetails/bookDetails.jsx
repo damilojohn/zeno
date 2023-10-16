@@ -1,7 +1,4 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react'
-import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import React from 'react'
 import { Home } from '../home/home'
 
 const BookDetails = () => {
@@ -21,8 +18,8 @@ const BookDetails = () => {
   return (
     <div className='container-details'>
       <Home />
+      </div>
 
-    </div>
   )
 }
 
