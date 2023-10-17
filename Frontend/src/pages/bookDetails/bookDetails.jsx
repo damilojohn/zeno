@@ -1,5 +1,5 @@
 import React from 'react'
-import { Home } from '../home/home'
+
 
 const BookDetails = () => {
   const [bookDetails, setBookDetails] = useState(null)
@@ -17,8 +17,8 @@ const BookDetails = () => {
   // useEffect(() => { fetchBook() }, [])
   return (
     <div className='container-details'>
-      <Home />
-      </div>
+
+    </div>
 
   )
 }

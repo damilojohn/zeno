@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import '../home/home.css'
 import Loader from '../../loader/loader'
-import { useHistory } from 'react-router-dom'
+
 
 const Home = () => {
     const [userInput, setUserInput] = useState('')
