@@ -4,21 +4,15 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import '../home/home.css'
 import Loader from '../../loader/loader'
-import { useNavigate } from 'react-router-dom'
-import BookDetails from '../../pages/bookDetails/bookDetails'
-import { Link } from 'react-router-dom'
+import BookModal from '../../modal/modal'
 
 const Home = () => {
     const [userInput, setUserInput] = useState('')
     const [loading, setLoading] = useState(false)
 
     const [data, setData] = useState(null)
-    const navigate = useNavigate()
-    // const history = useHistory()
-    // const linkToNewPage = () => {
-    //     history.push()
-
-    // }
+    const [selectedBook, setSelectedBook] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const handleInputChange = (e) => {
         e.preventDefault()
         setUserInput(e.target.value);
@@ -47,15 +41,25 @@ const Home = () => {
         e.preventDefault();
         fetchData()
     }
-    const handleBookClick = (index) => {
-        navigate(`/bookDetails/${index}`);
+    // const handleBookClick = (books) => {
+    //     setSelectedBooks(books);
+    //     setIsModalOpen(true);
+    // };
+    // const closeBookModal = () => {
+    //     // setSelectedBooks(null);
+    //     setIsModalOpen(false);
+    // };
+    const handleBookClick = (book) => {
+        console.log('Selected Book:', book);
+        setSelectedBook(book);
+        setIsModalOpen(true);
+    };
 
-    }
 
-
-
-    console.log('Data:', data);
-    // console.log('Index:', index);
+    const closeBookModal = () => {
+        setSelectedBook(null);
+        setIsModalOpen(false);
+    };
     return (
         <React.Fragment>
             <div className='container'>
@@ -65,9 +69,9 @@ const Home = () => {
 
                 <form className='search' action='#'>
                     <input
-                        id='search'
-                        type="search"
-                        name='searchQuery'
+                        type="text"
+                        id="searchInput"
+                        name="searchText"
                         value={userInput}
                         onChange={handleInputChange}
                         placeholder='enter a text describing what you feel '
@@ -76,37 +80,34 @@ const Home = () => {
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
 
                 </form>
-                {/* {loading ? <p>loading ...</p> : */}
+
                 <Suspense fallback={<p>loading....</p>}>
 
                     <div className='main-container'>
                         {
-                            data && data.books.map((item, index) => (
-                                <div className='display-container' key={item.isbn10}>
+                            data && data.books.map((book) => (
+                                <div className='display-container' key={book.isbn10} >
                                     <div className='title'>
-                                        <p> {item.title} </p>
+                                        <p> {book.title} </p>
                                     </div>
                                     <div className='thumbnail'>
-                                        <img src={item.thumbnail} alt=''></img>
+                                        <img src={book.thumbnail} alt=''></img>
                                     </div>
-
-                                    <div className='author'>  <p> {item.authors} </p></div>
-                                    {/* <button onClick={() => handleBookClick(index)}>View Details</button> */}
+                                    <div className='author'>  <p> {book.authors} </p></div>
+                                    <button onClick={() => handleBookClick(book)}>View Details</button>
                                 </div>
 
                             ))
                         }
+                        {/* <BookModal books={selectedBooks} onClose={closeBookModal} /> */}
+                        {/* {isModalOpen && <BookModal books={selectedBooks} onClose={closeBookModal} />} */}
+                        {selectedBook && <BookModal book={selectedBook} onClose={closeBookModal} isModalOpen={isModalOpen} />}
+                        {/* {isModalOpen && <BookModal book={selectedBook} onClose={closeBookModal} />} */}
+
+
 
                     </div>
                 </Suspense>
-                {/* } */}
-                {/* {data && <BookDetails data={data} />} */}
-                {/* {data && data.books ? <BookDetails data={data} /> : null} */}
-
-
-
-                {/* {data && data.books && <BookDetails data={data} />} */}
-
                 <footer>
                     <div className='credit'>
                         <h2>Credits</h2>

@@ -1,158 +1,167 @@
-// import React from 'react'
 
+// import React, { useState } from 'react'
+// import { useEffect } from 'react'
+// import axios from 'axios'
+// import { useParams } from 'react-router-dom'
 
 // const BookDetails = () => {
-//   const [bookDetails, setBookDetails] = useState(null)
-//   const { id } = useParams()
-//   console.log(id)
+//   // const [bookDetails, setBookDetails] = useState(null)
+//   const { isbn10 } = useParams()
+//   console.log(isbn10)
 //   // const fetchBook = async () => {
 //   //   try {
-//   //     const details = await axios.post(`https://hfex3k70e0.execute-api.us-east-1.amazonaws.com/prod/${isbn10}`, postData)
-//   //     setBookDetails(details.bookDetails)
+//   //     const response = await axios.get(`https://hfex3k70e0.execute-api.us-east-1.amazonaws.com/prod/${isbn10}`, {
+//   //       headers: {
+//   //         'Authorization': 'APPID',
+//   //       }
+//   //     })
+//   //     // setBookDetails(details.bookDetails)
+//   //     // console.log(bookDetails)
+//   //     setBookDetails(response.data)
+//   //     console.log(response.data)
+
 //   //   }
 //   //   catch (error) {
 //   //     console.log(error)
 //   //   }
 //   // }
-//   // useEffect(() => { fetchBook() }, [])
+//   // useEffect(() => { fetchBook() }, [isbn10])
 //   return (
 //     <div className='container-details'>
+//       {/* {bookDetails ?
+//         <div className='display-container'>
+//           <div className='title'>
+//             <p> {bookDetails.title} </p>
+//           </div>
+//           <div className='thumbnail'>
+//             <img src={bookDetails.thumbnail} alt='' />
+//           </div>
+//           <div className='author'>
+//             <p> {bookDetails.authors} </p>
+//           </div>
+//         </div>
+//         : null} */}
+//       <div className='display-container' key={item.isbn10} >
+//         <div className='title'>
+//           <p> {item.title} </p>
+//         </div>
+//         <div className='thumbnail'>
+//           <img src={item.thumbnail} alt=''></img>
+//         </div>
 
+//         <div className='author'>  <p> {item.authors} </p></div>
+
+//       </div>
+
+
+//       <Link to="/">Back to Search</Link>
 //     </div>
 
 //   )
 // }
 
 // export default BookDetails
-// BookDetails.jsx
-// import React from 'react';
-// import { useParams, useLocation } from 'react-router-dom';
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import { useParams } from 'react-router-dom';
+// import { useDataContext } from '../../datacontext';
 
-// const BookDetails = ({ data }) => {
-//   const { bookIndex } = useParams();
-//   const selectedBook = data.books[bookIndex];
+// const BookDetails = () => {
+//   // const [bookDetails, setBookDetails] = useState(null);
+//   // const { isbn10 } = useParams();
+
+//   const { state } = useDataContext();
+//   const { bookDetails } = state;
+
+//   // useEffect(() => {
+//   //   const fetchBook = async () => {
+//   //     try {
+//   //       const response = await axios.post(
+//   //         'https://hfex3k70e0.execute-api.us-east-1.amazonaws.com/prod/book-details',
+//   //         { isbn: isbn10 },
+//   //         {
+//   //           headers: {
+//   //             'Authorization': 'APPID',
+//   //           },
+//   //         }
+//   //       );
+
+//   //       setBookDetails(response.data);
+//   //     } catch (error) {
+//   //       console.log(error);
+//   //     }
+//   //   };
+
+//   //   fetchBook();
+//   // }, [isbn10]);
 
 //   return (
-//     <div>
-//       <h2>{selectedBook.title}</h2>
-//       <p>{selectedBook.authors}</p>
-//       {/* Add other book details here */}
+//     <div className='container-details'>
+//       {bookDetails ? (
+//         <div className='display-container' key={bookDetails.isbn10}>
+//           <div className='title'>
+//             <p>{bookDetails.title}</p>
+//           </div>
+//           <div className='thumbnail'>
+//             <img src={bookDetails.thumbnail} alt='' />
+//           </div>
+//           <div className='author'>
+//             <p>{bookDetails.authors}</p>
+//           </div>
+//         </div>
+//       ) : (
+//         <p>Loading...</p>
+//       )}
 //     </div>
 //   );
 // };
 
 // export default BookDetails;
-
-// import React from 'react';
+// import React, { useEffect, useState } from 'react';
+// import axios from 'axios';
 // import { useParams } from 'react-router-dom';
 
-// const BookDetails = ({ data }) => {
-//   const { index } = useParams();
-//   console.log(index)
+// const BookDetails = () => {
+//   const { isbn10 } = useParams();
+//   const [bookDetails, setBookDetails] = useState(null);
 
-//   // Convert the index to a number if needed
-//   const bookIndex = parseInt(index, 10);
+//   useEffect(() => {
+//     const fetchBookDetails = async () => {
+//       try {
+//         const postData = {
+//           query: bookDetails
+//         };
+//         const response = await axios.post(
+//           `https://hfex3k70e0.execute-api.us-east-1.amazonaws.com/prod/${isbn10}`,
+//           // { isbn: isbn }
+//           postData
+//         );
+//         setBookDetails(response.data);
+//       } catch (error) {
+//         console.error('Error fetching book details:', error);
+//       }
+//     };
 
-//   // Check if data is available and if the index is valid
-//   if (isNaN(bookIndex) || bookIndex < 1 || bookIndex >= data.books.length) {
-//     return <div>Invalid book index or data not available</div>;
-//   }
-
-//   const selectedBook = data.books[bookIndex - 1];
+//     fetchBookDetails();
+//   }, [isbn10]);
 
 //   return (
-//     <div>
-//       <h2>{selectedBook.title}</h2>
-//       <p>{selectedBook.authors}</p>
-//       {/* Add other book details here */}
+//     <div className="container">
+//       {bookDetails ? (
+//         <div className="book-details">
+//           <h2>{bookDetails.title}</h2>
+//           <div className="author">Author: {bookDetails.author}</div>
+//           <div className="description">{bookDetails.description}</div>
+//           {/* Add more book details here */}
+//         </div>
+//       ) : (
+//         <p>Loading...</p>
+//       )}
 //     </div>
 //   );
 // };
 
 // export default BookDetails;
+=======
 
-// import React from 'react';
-// import { useParams } from 'react-router-dom';
-// const BookDetails = ({ data }) => {
-//   const { index } = useParams();
-//   const bookIndex = parseInt(index, 10);
-
-//   if (!data || !data.books || isNaN(bookIndex) || bookIndex < 0 || bookIndex >= data.books.length) {
-//     return <div>Invalid book index or data not available.</div>;
-//   }
-
-//   const selectedBook = data.books[bookIndex];
-
-//   if (!selectedBook || !selectedBook.title) {
-//     return <div>Book details not available.</div>;
-//   }
-
-//   return (
-//     <div>
-//       <h2>{selectedBook.title}</h2>
-//       <p>{selectedBook.authors}</p>
-//       {/* Add other book details here */}
-//     </div>
-//   );
-// };
-
-// export default BookDetails;
-// import React from 'react';
-// import { useParams } from 'react-router-dom';
-
-// const BookDetails = ({ data }) => {
-//   const { index } = useParams();
-//   const bookIndex = parseInt(index, 10);
-
-//   // if (!data || !data.books || isNaN(bookIndex) || bookIndex < 0 || bookIndex >= data.books.length) {
-//   //   return <div>Invalid book index or data not available.</div>;
-//   // }
-
-//   const selectedBook = data.books[bookIndex];
-
-//   return (
-//     <div>
-//       <h2>{selectedBook.title}</h2>
-//       <p>Authors: {selectedBook.authors}</p>
-//       <p>Categories: {selectedBook.categories}</p>
-//       <p>Average Rating: {selectedBook.average_rating}</p>
-//       <p>Description: {selectedBook.description}</p>
-//       <p>Published Year: {selectedBook.published_year}</p>
-//       <img src={selectedBook.thumbnail} alt={selectedBook.title} />
-//       {/* You can display other book details here */}
-//     </div>
-//   );
-// };
-
-// export default BookDetails;
-import React from 'react';
-import { useParams } from 'react-router-dom';
-
-const BookDetails = ({ data }) => {
-  const { index } = useParams();
-  const bookIndex = parseInt(index, 10);
-  console.log('Data:', data);
-  console.log('Index:', index);
-
-  if (!data || !data.books || isNaN(bookIndex) || bookIndex < 0 || bookIndex >= data.books.length) {
-    console.log('Invalid data or index');
-    return <div>Invalid book index or data not available.</div>;
-  }
-
-  const selectedBook = data.books[bookIndex];
-
-  return (
-    <div>
-      <h2>{selectedBook.title}</h2>
-      <p>Authors: {selectedBook.authors}</p>
-      <p>Categories: {selectedBook.categories}</p>
-      <p>Average Rating: {selectedBook.average_rating}</p>
-      <p>Description: {selectedBook.description}</p>
-      <p>Published Year: {selectedBook.published_year}</p>
-      <img src={selectedBook.thumbnail} alt={selectedBook.title} />
-    </div>
-  );
-};
-
-export default BookDetails;
 
