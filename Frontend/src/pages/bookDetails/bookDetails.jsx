@@ -1,3 +1,4 @@
+
 // import React, { useState } from 'react'
 // import { useEffect } from 'react'
 // import axios from 'axios'
@@ -18,6 +19,7 @@
 //   //     // console.log(bookDetails)
 //   //     setBookDetails(response.data)
 //   //     console.log(response.data)
+
 //   //   }
 //   //   catch (error) {
 //   //     console.log(error)
@@ -55,15 +57,10 @@
 //       <Link to="/">Back to Search</Link>
 //     </div>
 
-
 //   )
 // }
 
 // export default BookDetails
-
-
-
-
 // import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 // import { useParams } from 'react-router-dom';
@@ -120,8 +117,6 @@
 // };
 
 // export default BookDetails;
-
-
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 // import { useParams } from 'react-router-dom';
@@ -167,4 +162,6 @@
 // };
 
 // export default BookDetails;
+=======
+
 
