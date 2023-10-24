@@ -55,6 +55,25 @@ button:hover {
 
 }
 
+.about {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    grid-column-gap: 3.2rem;
+    grid-row-gap: 3rem;
+    margin: 1rem 3rem;
+    font-family: "Avenir";
+    font-size: 25px;
+    font-weight: 750;
+    line-height: 24px;
+    color: #0c0e26;
+
+    @media screen and (max-width: 480px) {
+        display: none;
+    }
+
+}
+
 .display-container {
     /* display: grid;
     grid-template-columns: repeat(3, 1fr);
