@@ -66,6 +66,15 @@ const Home = () => {
                 <Header />
                 {/* <Preload loading={loading} /> */}
                 {loading && <Loader loading={loading} />}
+                <div className='about'>
+                    <div className='left-about'>
+                        <p>Zenno allows you to find books based on description provided by you.Using machine learning and sematic search, you could think of the process as talking to a liberian.</p>
+
+                    </div>
+                    <div className='right-about'>
+                        <p>Named after zenolotus,the first libarian of the library of Alenardines.</p>
+                    </div>
+                </div>
 
                 <form className='search' action='#'>
                     <input
@@ -74,7 +83,7 @@ const Home = () => {
                         name="searchText"
                         value={userInput}
                         onChange={handleInputChange}
-                        placeholder='enter a text describing what you feel '
+                        placeholder='For example:Book about roman emperrors and their romantic interest '
                         className='input'
                     />
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
