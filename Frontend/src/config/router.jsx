@@ -6,10 +6,12 @@ const router = createBrowserRouter([
         path: '/',
         element: <Home />
     },
+
     // {
     //     path: '/bookDetails/:isbn10',
     //     element: <BookDetails />
     // }
+
 ])
 const RouterComponent = () => (
     <RouterProvider router={router} />

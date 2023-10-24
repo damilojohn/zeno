@@ -102,7 +102,6 @@ const Home = () => {
                                     <div className='thumbnail'>
                                         <img src={book.thumbnail} alt=''></img>
                                     </div>
-
                                     <div className='author'>  <p> {book.authors} </p></div>
                                     <button onClick={() => handleBookClick(book)}>View Details</button>
                                 </div>
@@ -118,7 +117,6 @@ const Home = () => {
 
                     </div>
                 </Suspense>
-
                 <footer>
                     <div className='credit'>
                         <h2>Credits</h2>
