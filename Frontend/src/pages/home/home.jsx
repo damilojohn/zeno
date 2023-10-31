@@ -41,6 +41,13 @@ const Home = () => {
         e.preventDefault();
         fetchData()
     }
+    const handleClickKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            fetchData()
+
+        }
+    }
     // const handleBookClick = (books) => {
     //     setSelectedBooks(books);
     //     setIsModalOpen(true);
@@ -84,6 +91,7 @@ const Home = () => {
                         value={userInput}
                         onChange={handleInputChange}
                         placeholder='For example:Book about roman emperrors and their romantic interest '
+                        onKeyDown={handleClickKeyPress}
                         className='input'
                     />
                     <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
