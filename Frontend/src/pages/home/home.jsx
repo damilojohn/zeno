@@ -133,7 +133,7 @@ const Home = () => {
                                 <a href="https://github.com/damilojohn" target="_blank" rel="noopener noreferrer" >Damilola John </a> - Machine Learning Engineer
                             </li>
                             <li>
-                                <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a> - Software Developer
+                                <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a> - Frontend Engineer
                             </li>
                         </ul>
                     </div>
