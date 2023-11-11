@@ -1,10 +1,11 @@
-import Header from '../../component/molecule/header/header'
+import Header from '../../component/molecule/navbar/navbar'
 import React, { Suspense } from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import '../home/home.css'
 import Loader from '../../loader/loader'
 import BookModal from '../../modal/modal'
+import Navbar from '../../component/molecule/navbar/navbar'
 
 const Home = () => {
     const [userInput, setUserInput] = useState('')
@@ -70,7 +71,7 @@ const Home = () => {
     return (
         <React.Fragment>
             <div className='container'>
-                <Header />
+                <Navbar />
                 {/* <Preload loading={loading} /> */}
                 {loading && <Loader loading={loading} />}
                 <div className='about'>
