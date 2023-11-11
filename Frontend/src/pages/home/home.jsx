@@ -1,4 +1,4 @@
-import Header from '../../component/molecule/navbar/navbar'
+import Header from '../../component/organism/header/header.jsx'
 import React, { Suspense } from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -74,6 +74,7 @@ const Home = () => {
                 <Navbar />
                 {/* <Preload loading={loading} /> */}
                 {loading && <Loader loading={loading} />}
+                <Header />
                 <div className='about'>
                     <div className='left-about'>
                         <p>Zenno allows you to find books based on description provided by you.Using machine learning and sematic search, you could think of the process as talking to a liberian.</p>
