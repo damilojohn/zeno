@@ -6,6 +6,9 @@ import '../home/home.css'
 import Loader from '../../loader/loader'
 import BookModal from '../../modal/modal'
 import Navbar from '../../component/molecule/navbar/navbar'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 
 const Home = () => {
     const [userInput, setUserInput] = useState('')
@@ -75,7 +78,15 @@ const Home = () => {
                 {/* <Preload loading={loading} /> */}
                 {loading && <Loader loading={loading} />}
                 <Header />
+                <div className='text-header'>
+                    Discover books that <br />
+                    match your imagination.
+                </div>
                 <div className='about'>
+                    <p>Unleash the power of machine learning and sematic search with <b>zeno</b> .Find books <br />
+                        that match your unique intrests and explore the limitless word of knowledge. </p>
+                </div>
+                {/* <div className='about'>
                     <div className='left-about'>
                         <p>Zenno allows you to find books based on description provided by you.Using machine learning and sematic search, you could think of the process as talking to a liberian.</p>
 
@@ -83,7 +94,7 @@ const Home = () => {
                     <div className='right-about'>
                         <p>Named after zenolotus,the first libarian of the library of Alenardines.</p>
                     </div>
-                </div>
+                </div> */}
 
                 <form className='search' action='#'>
                     <input
@@ -96,7 +107,7 @@ const Home = () => {
                         onKeyDown={handleClickKeyPress}
                         className='input'
                     />
-                    <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search'} </button>
+                    <button type="button" onClick={handleClick} > {loading ? 'Loading...' : 'Search book '} </button>
 
                 </form>
 
@@ -127,6 +138,23 @@ const Home = () => {
 
                     </div>
                 </Suspense>
+                <div className='details-container'>
+                    <div className='details'>
+                        <div className='left-details'>
+                            You remember <br />
+                            that book <br />
+                            right?
+                            <p>search with zeno.</p>
+                        </div>
+                        <div className='right-details'>
+                            <img src="src\assets\Isometric Stickers - Books 1 (2).png" alt="" />
+
+
+                        </div>
+
+                    </div>
+                </div>
+
                 <footer>
                     <div className='credit'>
                         <h2>Credits</h2>
