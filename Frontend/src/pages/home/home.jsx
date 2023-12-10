@@ -251,7 +251,7 @@ const Home = () => {
                         <p>search with zeno.</p>
                     </div>
 
-                    <img src="C:\Users\makin\Documents\zeno\Frontend\src\assets\Isometric Stickers - Books 1 (3).png" alt="" />
+                    <img src="src\assets\Isometric Stickers - Books 1 (3).png" alt="" />
 
 
                 </div>
