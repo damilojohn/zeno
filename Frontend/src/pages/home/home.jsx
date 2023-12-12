@@ -8,6 +8,7 @@ import BookModal from '../../modal/modal'
 import Navbar from '../../component/molecule/navbar/navbar'
 import zenno3 from '../../assets/Isometric Stickers - Books 1 (3).png'
 import zenno2 from '../../assets/Isometric Stickers - Books 1 (2).png'
+import zenno from '../../assets/zeno. (1).png'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -175,7 +176,7 @@ const Home = () => {
                     <div className='credit-container'>
                         <div className='logo-z'>
                             {/* <img src="/" alt="book" /> */}
-                            <img src="/src/assets/zeno. (1).png" alt="zeno"></img>
+                            <img src={zenno} alt="zenno-image"></img>
 
                         </div>
                         <div className='credit'>
