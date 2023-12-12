@@ -6,6 +6,8 @@ import '../home/home.css'
 import Loader from '../../loader/loader'
 import BookModal from '../../modal/modal'
 import Navbar from '../../component/molecule/navbar/navbar'
+import zenno3 from '../../assets/Isometric Stickers - Books 1 (3).png'
+import zenno2 from '../../assets/Isometric Stickers - Books 1 (2).png'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -150,7 +152,7 @@ const Home = () => {
                             <p>search with zeno.</p>
                         </div>
                         <div className='right-details'>
-                            <img src="src\assets\Isometric Stickers - Books 1 (2).png" alt="" />
+                            <img src={zenno2} alt="book-image" />
 
 
                         </div>
@@ -172,12 +174,13 @@ const Home = () => {
                     </div> */}
                     <div className='credit-container'>
                         <div className='logo-z'>
-                            <img src="src\assets\zeno. (1).png" alt="" />
+                            {/* <img src="/" alt="book" /> */}
+                            <img src="/src/assets/zeno. (1).png" alt="zeno"></img>
 
                         </div>
                         <div className='credit'>
-                            Named after zenolotus,the first libarian <br />
-                            of the library of Alenardines.
+                            Named after zenodotus,the first libarian <br />
+                            of the library of Alexandria.
                             {/* 
                             <p>Site created with by  <a href="https://github.com/damilojohn" target="_blank" rel="noopener noreferrer" >Damilola John </a> &  <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a>. 2023</p> */}
 
@@ -194,7 +197,8 @@ const Home = () => {
                 {loading && <Loader loading={loading} />}
                 <div className='text-header'>
                     Discover books that <br />
-                    match your imagination.
+                    match your imagination.By simply
+                    describing the kind of books you want.
                 </div>
                 <form className='search' action='#'>
                     <input
@@ -240,8 +244,8 @@ const Home = () => {
                     </div>
                 </Suspense>
                 <div className='about'>
-                    <p>Unleash the power of machine learning and sematic search with <b>zeno</b> .Find books
-                        that match your unique intrests and explore the limitless word of knowledge. </p>
+                    <p>Unleash the power of machine learning and semantic search with <b>zeno</b> .Find books
+                        that match your unique interests and explore the limitless world of knowledge. </p>
                 </div>
                 <div className='mobile-details'>
                     <div className='mobile-top-details'>
@@ -251,7 +255,7 @@ const Home = () => {
                         <p>search with zeno.</p>
                     </div>
 
-                    <img src="src\assets\Isometric Stickers - Books 1 (3).png" alt="" />
+                    <img src={zenno3} alt="mobile-view" />
 
 
                 </div>
