@@ -2,7 +2,7 @@ import Header from '../../component/organism/header/header.jsx'
 import React, { Suspense } from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import '../home/home.css'
+// import '../home/home.css'
 import Loader from '../../loader/loader'
 import BookModal from '../../modal/modal'
 import Navbar from '../../component/molecule/navbar/navbar'
@@ -78,7 +78,7 @@ const Home = () => {
     };
     return (
         <React.Fragment>
-            <div className='container'>
+            <div className='main-container'>
                 <Navbar />
                 {/* <Preload loading={loading} /> */}
                 {loading && <Loader loading={loading} />}
@@ -193,7 +193,7 @@ const Home = () => {
 
                 </footer>
             </div>
-            <div className='mobile-container'>
+            {/* <div className='mobile-container'>
                 <Navbar />
                 {loading && <Loader loading={loading} />}
                 <div className='text-header'>
@@ -235,12 +235,9 @@ const Home = () => {
 
                             ))
                         }
-                        {/* <BookModal books={selectedBooks} onClose={closeBookModal} /> */}
-                        {/* {isModalOpen && <BookModal books={selectedBooks} onClose={closeBookModal} />} */}
+                     
                         {selectedBook && <BookModal book={selectedBook} onClose={closeBookModal} isModalOpen={isModalOpen} />}
-                        {/* {isModalOpen && <BookModal book={selectedBook} onClose={closeBookModal} />} */}
-
-
+                       
 
                     </div>
                 </Suspense>
@@ -260,7 +257,7 @@ const Home = () => {
 
 
                 </div>
-            </div>
+            </div> */}
         </React.Fragment>
     )
 }
