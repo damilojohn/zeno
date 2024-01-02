@@ -29,18 +29,18 @@ const Navbar = () => {
 
 
     // </div>
-    <div className="flex  bg-zenno-white justify-between px-10 py-5 w-auto shadow-md">
-      <div className='navbar-left'><img src={image} alt="zeeno" /></div>
+    <div className="flex  bg-zenno-white justify-between px-10 py-6 w-auto shadow-lg items-baseline">
+      <div className='text-zenno-black w-84'><img src={image} alt="zeeno" className='image-style-1'/></div>
       <div className='center '>
       
-        <ul className="flex space-x-4">
-          <li className="text-blue-500 hover:underline">Home</li>
-          <li className="text-blue-500 hover:underline">About Us</li>
-          <li className="text-blue-500 hover:underline">Contact</li>
+        <ul className="flex  gap-8">
+          <li className="text-zenno-black text-center text-base hover:underline w-51 h-17">Home</li>
+          <li className="text-zenno-black text-center text-base hover:underline w-75 h-17">About Us</li>
+          <li className="text-zenno-black text-center text-base hover:underline  h-17">Contact</li>
         </ul>
       </div>
       <div className='search' >
-        <img src={image1} alt="" />
+        <img src={image1} alt="" className='flex w-18 h-18 item-center'/>
       </div>
 
 
