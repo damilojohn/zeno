@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   scroll-behavior: smooth;
   background-color: #F5F5F5;
@@ -18,4 +18,79 @@ body {
     url('/public/fonts/CabinetGrotesk-Thin.otf') format('otf');
   font-weight: normal;
   font-style: normal;
+} */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* 
+*{
+  body {
+   
+  
+  }
+  margin: 0;
+  padding: 0;
+
+  min-width: 320px;
+  min-height: 100vh;
+  
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+  }
+  
+  ul {
+    margin: 0;
+  }
+} */
+/* Reset CSS */
+/* * {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+}
+ */
+
+@layer components {
+  .search{
+    width: 47px ;
+    height: 36.56px ;
+    background-color: theme('colors.zenno-orange');
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@layer base {
+  img {
+    display: flex;
+    align-items: center;
+  }
 }
