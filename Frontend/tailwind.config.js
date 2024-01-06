@@ -12,6 +12,8 @@ export default {
         'zenno-black': 'rgba(0, 0, 0, 1)',
         'zenno-lblack': '#00000082',
         'zenno-2black': 'rgba(0, 0, 0, 0.70)',
+        'zenno-1white': ' #FFF',
+        'zenno-clear': ' rgba(255, 255, 255, 0.70)',
       },
       fontSize: {},
       fontFamily: {},
