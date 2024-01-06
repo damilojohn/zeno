@@ -1,6 +1,34 @@
-/*
-! tailwindcss v3.4.0 | MIT License | https://tailwindcss.com
-*/
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* body {
+  margin: 0;
+  scroll-behavior: smooth;
+  background-color: #F5F5F5;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/public/fonts/CabinetGrotesk-Black.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Regular.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Bold.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Extrabold.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Extralight.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Light.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Medium.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Thin.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+} */
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* ! tailwindcss v3.4.0 | MIT License | https://tailwindcss.com */
 
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
@@ -544,63 +572,105 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
-.container {
-  width: 100%;
-}
-
-@media (min-width: 640px) {
-  .container {
-    max-width: 640px;
+/* 
+*{
+  body {
+   
+  
   }
-}
+  margin: 0;
+  padding: 0;
 
-@media (min-width: 768px) {
-  .container {
-    max-width: 768px;
+  min-width: 320px;
+  min-height: 100vh;
+  
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
   }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
+  
+  ul {
+    margin: 0;
   }
+} */
+
+/* Reset CSS */
+
+/* * {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+}
+ */
+
+/* 
+@layer components {
+  .search {
+    width: 47px;
+    height: 36.56px;
+    background-color: theme('colors.zenno-orange');
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-}
 
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
+  .form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'News701 BT';
+    margin: 5rem 0 0 0;
+
   }
-}
 
-.block {
-  display: block;
-}
+  border border-black
+  .form-container {
+    display: flex;
+    justify-content: center;
 
-.flex {
-  display: flex;
-}
+    justify-content: space-around;
+    align-items: center;
 
-.justify-center {
-  justify-content: center;
-}
+    height: 46px;
+    width: 857px;
+    margin: 4rem 3rem;
+    border-radius: 1.375rem;
+    border: 2px solid #000;
+    background: #F9FAFB;
+    box-shadow: 0px 4px 0px 0px #141414;
+    background-color: #F9FAFB;
+    position: relative;
+  }
+} */
 
-.space-x-4 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(1rem * var(--tw-space-x-reverse));
-  margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
-}
-
-.text-blue-500 {
-  --tw-text-opacity: 1;
-  color: rgb(59 130 246 / var(--tw-text-opacity));
-}
-
-.hover\:underline:hover {
-  text-decoration-line: underline;
-}
+/* 
+@layer base {
+  img  {
+    display: flex;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+  }
+} */
