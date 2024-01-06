@@ -163,14 +163,21 @@ const Home = () => {
             {/* {isModalOpen && <BookModal book={selectedBook} onClose={closeBookModal} />} */}
           </div>
         </Suspense>
-        <div className="details-container">
-          <div className="details">
-            <div className="left-details">
+        <div className="flex items-center justify-center">
+          <div className="w-[58.625rem] h-[15.25rem] bg-zenno-orange rounded-[1.5rem] flex justify-between relative top-[85px]">
+            <div className="text-zenno-1white text-[1.875rem] not-italic font-bold leading-[2.0625rem] p-[4rem] mt-[-0.875rem] ">
               You remember <br />
               that book <br />
               right?
-              <p>search with zeno.</p>
+              <p className="text-[0.9375rem] font-bold not-italic leading-[1.03125rem] text-zenno-clear mt-space250">
+                Explore with{' '}
+                <span className="text-zenno-1white font-bold text-[1rem] leading-[1.03125rem]">
+                  Zeeno
+                </span>
+                .
+              </p>
             </div>
+
             <div className="right-details">
               <img src={zenno2} alt="book-image" />
             </div>
