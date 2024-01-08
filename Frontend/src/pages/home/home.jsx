@@ -280,7 +280,7 @@ const Home = () => {
                   <p className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
                     Contact
                   </p>
-                  <ul>
+                  <ul className="gap-[1.19rem] flex flex-col">
                     <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
                       Mail:Zeeno@gmail.com
                     </li>
