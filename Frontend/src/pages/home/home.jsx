@@ -10,6 +10,11 @@ import zenno3 from '../../assets/Isometric Stickers - Books 1 (3).png';
 import zenno2 from '../../assets/Isometric Stickers - Books 1 (2).png';
 import zenno from '../../assets/zeno. (1).png';
 import icon from '../../assets/Frame.svg';
+import logo from '../../assets/Logo.png';
+import x from '../../assets/X - png 0.png';
+import google from '../../assets/Google svg.png';
+import facebook from '../../assets/Facebook svg.png';
+import instagram from '../../assets/Vector (2).png';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -163,7 +168,7 @@ const Home = () => {
             {/* {isModalOpen && <BookModal book={selectedBook} onClose={closeBookModal} />} */}
           </div>
         </Suspense>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center ">
           <div className="w-[58.625rem] h-[15.25rem] bg-zenno-orange rounded-[1.5rem] flex justify-between relative top-[85px]">
             <div className="text-zenno-1white text-[1.875rem] not-italic font-bold leading-[2.0625rem] p-[4rem] mt-[-0.875rem] ">
               You remember <br />
@@ -185,30 +190,112 @@ const Home = () => {
         </div>
 
         <footer>
-          {/* <div className='credit'>
-                        <h2>Credits</h2>
-                        <ul>
-                            <li>
-                                <a href="https://github.com/damilojohn" target="_blank" rel="noopener noreferrer" >Damilola John </a> - Machine Learning Engineer
-                            </li>
-                            <li>
-                                <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a> - Frontend Engineer
-                            </li>
-                        </ul>
-                    </div> */}
-          <div className="credit-container">
-            <div className="logo-z">
-              {/* <img src="/" alt="book" /> */}
-              <img src={zenno} alt="zenno-image"></img>
+          <div className="w-auto h-[31.25rem] border-solid border-[2px] border-black mt-[12.25rem] flex bg-zenno-3black text-zenno-white p-[2rem]">
+            <div className="relative w-[24.5624rem]">
+              <img
+                src={logo}
+                alt=""
+                className="absolute left-[6.3125rem] bottom-[5.27131rem]"
+              />
+              {/* osition: absolute; left: 2.3125rem; bottom: 10.27131rem width: 24.5624rem;*/}
             </div>
-            <div className="credit">
-              Named after zenodotus,the first libarian <br />
-              of the library of Alexandria.
-              {/* 
-                            <p>Site created with by  <a href="https://github.com/damilojohn" target="_blank" rel="noopener noreferrer" >Damilola John </a> &  <a href="https://github.com/mankinde23" target="_blank" rel="noopener noreferrer" >Makinde Damilola </a>. 2023</p> */}
+            <div className="flex gap-[11rem] pt-[3rem]">
+              <div className="">
+                <ul className="gap-[1.19rem] flex flex-col">
+                  <li className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
+                    Zeeno
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Home
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    About us
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Contact
+                  </li>
+                  {/* flex items-end gap-[1.19rem] absolute left-[19.75rem] top-[4.6875rem]
+                  flex-co */}
+                </ul>
+              </div>
+              <div>
+                <ul className="gap-[1.19rem] flex flex-col">
+                  <li className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
+                    Support
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    FAQs
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Blogs
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Cookies Policy
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Privacy Policy
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Terms of use
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <ul className="gap-[1.19rem] flex flex-col">
+                  <li className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
+                    Discorver
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Journals
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Proceedings
+                  </li>
+                  <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                    Books
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <div className="gap-[1.19rem] flex flex-col">
+                  <p className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
+                    Socials
+                  </p>
+                  <ul className="flex items-center gap-[1rem] ml-[-2rem]">
+                    <li>
+                      <img src={facebook} alt="" />
+                    </li>
+                    <li>
+                      <img src={instagram} alt="" />
+                    </li>
+                    <li>
+                      <img src={x} alt="" />
+                    </li>
+                    <li>
+                      <img src={google} alt="" />
+                    </li>
+                  </ul>
+                </div>
+                <div className="gap-[1.19rem] flex flex-col">
+                  <p className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
+                    Contact
+                  </p>
+                  <ul>
+                    <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                      Mail:Zeeno@gmail.com
+                    </li>
+                    <li className="text-zenno-clear leading-normal font-normal text-[1.125rem]">
+                      Phone:+2348081738984
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </footer>
+        {/* <div className="logo-z">
+          <img src={zenno} alt="zenno-image"></img>
+        </div> */}
       </div>
       {/* <div className='mobile-container'>
                 <Navbar />
