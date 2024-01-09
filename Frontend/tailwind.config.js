@@ -15,6 +15,7 @@ export default {
         'zenno-1white': ' #FFF',
         'zenno-clear': ' rgba(255, 255, 255, 0.70)',
         'zenno-3black': '#000',
+        'zenno-4black': 'rgba(0, 0, 0, 0.80)',
       },
       fontSize: {},
       fontFamily: {},
