@@ -139,21 +139,29 @@ const Home = () => {
                 </div> */}
 
         <Suspense fallback={<p>loading....</p>}>
-          <div className="main-container">
+          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[3rem] my-[1rem] justify-items-center">
             {data &&
               data.books.map(book => (
-                <div className="display-container" key={book.isbn10}>
-                  <div className="title">
+                <div
+                  className="shadow-lg bg-zenno-1white w-[22.25rem] h-[29.5625rem] grid justify-center items-baseline col-span-1 last:col-span-3"
+                  key={book.isbn10}
+                >
+                  <div className="text-[1rem] font-bold leading-[1.5rem] text-center w-[10rem]">
                     <p> {book.title} </p>
                   </div>
                   <div className="thumbnail">
-                    <img src={book.thumbnail} alt=""></img>
+                    <img src={book.thumbnail} alt="" className="mx-auto my-auto"></img>
                   </div>
-                  <div className="author">
+                  <div className="text-[0.9375rem] font-semibold text-zenno-3black leading-[1.40625rem] text-center w-[10rem]">
                     {' '}
                     <p> {book.authors} </p>
                   </div>
-                  <button onClick={() => handleBookClick(book)}>View Details</button>
+                  <button
+                    onClick={() => handleBookClick(book)}
+                    className="w-[10.375rem] pt-[1.625rem] pb-[1.6875rem] pr-[1.75rem] pl-[1.75rem] bg-zenno-orange rounded-[0.3125rem] h-[2.875rem] flex justify-center items-center text-zenno-1white text-[1.125rem] font-normal leading-[1.69rem]"
+                  >
+                    View Details
+                  </button>
                 </div>
               ))}
             {/* <BookModal books={selectedBooks} onClose={closeBookModal} /> */}
@@ -263,7 +271,7 @@ const Home = () => {
                   </p>
                   <ul className="flex items-center gap-[1rem] ml-[-2rem]">
                     <li>
-                      <img src={facebook} alt="" />
+                      <img src={facebook} alt="" className="relative top-[0.2rem]" />
                     </li>
                     <li>
                       <img src={instagram} alt="" />
