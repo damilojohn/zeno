@@ -139,7 +139,7 @@ const Home = () => {
                 </div> */}
 
         <Suspense fallback={<p>loading....</p>}>
-          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[3rem] my-[1rem] justify-items-center">
+          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[3rem] my-[1rem] justify-items-center sm:block">
             {data &&
               data.books.map(book => (
                 <div
@@ -207,7 +207,7 @@ const Home = () => {
               />
               {/* osition: absolute; left: 2.3125rem; bottom: 10.27131rem width: 24.5624rem;*/}
             </div>
-            <div className="flex gap-[11rem] pt-[3rem]">
+            <div className="flex gap-[11rem] pt-[3rem] sm:block">
               <div className="">
                 <ul className="gap-[1.19rem] flex flex-col">
                   <li className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
