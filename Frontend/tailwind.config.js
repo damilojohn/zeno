@@ -16,6 +16,7 @@ export default {
         'zenno-clear': ' rgba(255, 255, 255, 0.70)',
         'zenno-3black': '#000',
         'zenno-4black': 'rgba(0, 0, 0, 0.80)',
+        'zenno-mwhite': '#F9FAFB',
       },
       fontSize: {},
       fontFamily: {},
@@ -39,6 +40,7 @@ export default {
       },
       /* All common box shadows */
       boxShadow: {
+        custom: '0px 4px 0px 0px #141414',
         xs: '0px 2px 5px 0px rgba(103, 110, 118, 0.08), 0px 1px 1px 0px rgba(0, 0, 0, 0.12)',
         md: '0px 1px 1px 0px rgba(4, 101, 123, 0.12), 0px 0px 0px 1px rgba(4, 101, 123, 0.16), 0px 2px 5px 0px rgba(4, 101, 123, 0.08), 0px 2px 5px 0px rgba(103, 110, 118, 0.08)',
         lg: ' 0px 15px 35px 0px rgba(103, 110, 118, 0.08), 0px 5px 15px 0px rgba(0, 0, 0, 0.12)',
