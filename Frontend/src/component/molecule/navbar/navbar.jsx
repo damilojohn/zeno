@@ -9,7 +9,7 @@ import hamburger from '../../../assets/menu.svg';
 const Navbar = () => {
   return (
     <>
-      <div className="md:hidden 2xl:flex  bg-zenno-white justify-between px-[3.12rem] py-[2.31rem] w-auto shadow-lg items-baseline">
+      <div className="md:hidden lg:hidden 2xl:flex  bg-zenno-white justify-between px-[3.12rem] py-[2.31rem] w-auto shadow-lg items-baseline">
         <div className="text-zenno-black w-84">
           <img src={image} alt="zeeno" className="image-style-1" />
         </div>
@@ -31,7 +31,7 @@ const Navbar = () => {
         </div>
       </div>
       {/* MOBILE */}
-      <div className="2xl:hidden md:flex  bg-zenno-white justify-between py-[2.31rem] w-auto items-baseline mr-[0.81rem] ml-[0.81rem]">
+      <div className="2xl:hidden lg:flex md:flex  bg-zenno-white justify-between py-[2.31rem] w-auto items-baseline mr-[0.81rem] ml-[0.81rem]">
         <div className="text-zenno-black w-84">
           <img src={image} alt="zeeno" className="image-style-1" />
         </div>
