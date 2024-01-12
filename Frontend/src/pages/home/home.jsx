@@ -81,7 +81,7 @@ const Home = () => {
   };
   return (
     <React.Fragment>
-      <div className="md:hidden">
+      <div className="md:hidden sm:hidden lg:hidden xl:block">
         <Navbar />
         {/* <Preload loading={loading} /> */}
         {loading && <Loader loading={loading} />}
@@ -140,7 +140,7 @@ const Home = () => {
                 </div> */}
 
         <Suspense fallback={<p>loading....</p>}>
-          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[3rem] my-[1rem] justify-items-center sm:block">
+          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[3rem] my-[4rem] justify-items-center sm:block">
             {data &&
               data.books.map(book => (
                 <div
@@ -199,16 +199,16 @@ const Home = () => {
         </div>
 
         <footer>
-          <div className="md:hidden w-auto h-[31.25rem] border-solid border-[2px] border-black mt-[12.25rem] flex bg-zenno-3black text-zenno-white p-[2rem]">
-            <div className="relative w-[24.5624rem]">
+          <div className="md:hidden w-full h-[31.25rem] border-solid border-[2px] border-black mt-[12.25rem] flex bg-zenno-3black text-zenno-white p-[2rem]">
+            <div className="relative w-[24.5624rem] xl:w-full">
               <img
                 src={logo}
                 alt=""
-                className="absolute left-[6.3125rem] bottom-[5.27131rem]"
+                className="absolute left-[0.3125rem] bottom-[-1.72869rem] max-w-none"
               />
-              {/* osition: absolute; left: 2.3125rem; bottom: 10.27131rem width: 24.5624rem;*/}
+              {/* osition: absolute; left: 2.3125rem; bottom: 10.27131rem width: 24.5624rem; 0.3125rem*/}
             </div>
-            <div className="flex gap-[11rem] pt-[3rem] sm:block">
+            <div className="flex gap-[10rem] pt-[3rem] sm:block">
               <div className="">
                 <ul className="gap-[1.19rem] flex flex-col">
                   <li className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
@@ -305,7 +305,7 @@ const Home = () => {
       </div>
       {/*      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
-      <div className="2xl:hidden md:block">
+      <div className="2xl:hidden sm:block md:block sm:w-full lg:block">
         <Navbar />
 
         {loading && <Loader loading={loading} />}
@@ -324,7 +324,7 @@ const Home = () => {
               onChange={handleInputChange}
               placeholder="search for books based on your description"
               onKeyDown={handleClickKeyPress}
-              className="w-[19.125rem] pt-[1.06rem] pb-[1.25rem] pr-[0.94rem] outline-none h-[0.4375rem] font-bold leading-[0.6445rem] text-[0.6rem]"
+              className="w-[19.125rem] pt-[1.06rem] pb-[1.25rem] pr-[0.94rem] outline-none h-[0.4375rem] font-bold leading-[0.6445rem] text-[0.6rem] sm:w-[18.125rem]"
             />
             <button
               type="button"
@@ -361,11 +361,11 @@ const Home = () => {
                 </div> */}
 
         <Suspense fallback={<p>loading....</p>}>
-          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[2rem] my-[1rem] justify-items-center sm:block">
+          <div className="grid grid-cols-3 auto-rows-auto gap-x-[3.2rem] gap-y-[3.3rem] mx-[2rem] my-[1rem] justify-items-center sm:block lg:flex lg:justify-center lg:items-center lg:flex-col">
             {data &&
               data.books.map(book => (
                 <div
-                  className="shadow-lg bg-zenno-1white w-[22.25rem] h-[29.5625rem] grid justify-center items-baseline col-span-1 last:col-span-3 mt-[4.38rem]"
+                  className="shadow-lg bg-zenno-1white w-[22.25rem] h-[29.5625rem] grid justify-center items-baseline col-span-1 last:col-span-3 mt-[4.38rem] md:w-full"
                   key={book.isbn10}
                 >
                   <div className="text-[1rem] font-bold leading-[1.5rem] text-center w-[10rem]">
@@ -420,12 +420,12 @@ const Home = () => {
           </div>
         </div>
 
-        <footer className="w-[25.875rem] h-[60.75rem] bg-zenno-3black mt-[3.12rem]">
+        <footer className="w-full h-[60.75rem] bg-zenno-3black mt-[3.12rem]">
           <div className="p-[4rem]">
             <div className="logo">
               <img src={logo} alt="" />
             </div>
-            <div className="flex pt-[3rem] justify-center gap-[5rem]">
+            <div className="flex pt-[3rem] justify-center md:gap-[5rem] lg:gap-[12rem]">
               <div className="gap-[4rem] flex flex-col pl-[2.25rem]">
                 <ul className="gap-[1.19rem] flex flex-col">
                   <li className="text-zenno-1white font-semibold leading-normal text-[1.25rem]">
