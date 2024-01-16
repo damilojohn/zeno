@@ -401,7 +401,7 @@ const Home = () => {
         <div className="flex items-center justify-center ">
           <div className="w-[20.3125rem] h-[34.9375rem] bg-zenno-orange rounded-[1.5rem]">
             <div className="text-zenno-1white text-[1.5rem] not-italic font-bold leading-[1.65rem] mt-[2.68rem] mr-[4.31rem] ml-[4.31rem] w-[11.6875rem]">
-              <p>
+              <p className="text-center">
                 You remember <br /> that book <br /> right?
               </p>
 
