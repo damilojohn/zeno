@@ -16,6 +16,7 @@ import x from '../../assets/X - png 0.png';
 import google from '../../assets/Google svg.png';
 import facebook from '../../assets/Facebook svg.png';
 import instagram from '../../assets/Vector (2).png';
+import Slideshow from '../../component/slider/slider.jsx';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -177,6 +178,7 @@ const Home = () => {
             {/* {isModalOpen && <BookModal book={selectedBook} onClose={closeBookModal} />} */}
           </div>
         </Suspense>
+        <Slideshow />
         <div className="flex items-center justify-center ">
           <div className="w-[58.625rem] h-[15.25rem] bg-zenno-orange rounded-[1.5rem] flex justify-between relative top-[85px]">
             <div className="text-zenno-1white text-[1.875rem] not-italic font-bold leading-[2.0625rem] p-[4rem] mt-[-0.875rem] ">
