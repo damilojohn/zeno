@@ -7,6 +7,7 @@ import image1 from '/src/assets/Vector (1).png';
 import hamburger from '../../../assets/menu.svg';
 import exit from '../../../assets/menu (1).svg';
 import line from '../../../assets/Line 7.png';
+import {Link} from 'react-router-dom';
 import {useState} from 'react';
 
 const Navbar = () => {
@@ -29,7 +30,7 @@ const Navbar = () => {
               Home
             </li>
             <li className="text-zenno-black text-center text-base hover:underline w-75 h-17">
-              About Us
+              <Link to="/aboutUs">About Us</Link>
             </li>
             <li className="text-zenno-black text-center text-base hover:underline  h-17">
               Contact
