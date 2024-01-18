@@ -42,37 +42,6 @@ const Navbar = () => {
         </div>
       </div>
       {/* MOBILE */}
-      {/* <div className="2xl:hidden lg:flex md:flex  bg-zenno-white justify-between py-[2.31rem] w-auto items-baseline mr-[0.81rem] ml-[0.81rem]">
-        <div className="text-zenno-black w-84">
-          <img src={image} alt="zeeno" className="image-style-1" />
-        </div>
-
-        <div onClick={handleMenu} className="fixed">
-          {!menuOpen ? (
-            <img src={exit} className="flex h-[18px] item-center mt-space0 mb-[8px]" />
-          ) : (
-            <img src={hamburger} className="flex w-[18px] h-[18px] item-center" />
-          )}
-        </div>
-
-        <nav
-          className={
-            !menuOpen
-              ? 'w-[13rem] fixed h-full border-r bg-zenno-1white top-space0 right-space0 z-50 border-r-gray-900'
-              : 'fixed left-[-100%]'
-          }
-        >
-          <div>
-            {' '}
-            <img src={exit} className="flex w-[18px] h-[18px] item-center" />
-          </div>
-          <ul className="flex flex-col items-center justify-center h-full uppercase p-[4px]">
-            <li className="p-[4px] border-b border-gray-600">Home</li>
-            <li className="p-[4px] border-b border-gray-600">About Us</li>
-            <li className="p-[4px] border-b border-gray-600">Contact</li>
-          </ul>
-        </nav> 
-      </div> */}
       <div className="2xl:hidden lg:flex md:flex bg-zenno-white justify-between py-[2.31rem] w-auto items-baseline mr-[0.81rem] ml-[0.81rem]">
         <div className="text-zenno-black w-84">
           <img src={image} alt="zeeno" className="image-style-1" />
