@@ -118,6 +118,30 @@ ul {
     background-color: #F9FAFB;
     position: relative;
   }
+
+  .slideShow {
+    /* Slideshow */
+    margin: 0 auto;
+    overflow: hidden;
+    /* max-width: 500px; */
+
+  }
+
+  .slide {
+    height: 68px;
+    width: 100%;
+    border-radius: 40px;
+    display: inline-block;
+    color: #000000;
+    font-size: 26px;
+    line-height: 39px;
+    text-align: justify;
+  }
+
+  .slideshowSlider {
+    white-space: nowrap;
+    transition: ease 1000ms;
+  }
 }
 
 /* 
