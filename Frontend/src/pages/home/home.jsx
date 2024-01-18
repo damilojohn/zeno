@@ -313,9 +313,9 @@ const Home = () => {
         {loading && <Loader loading={loading} />}
         <Header />
 
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center mt-[3.18rem]">
           <form
-            className="flex justify-center items-center w-[21.625rem] relative rounded-[1.25rem] bg-zenno-mwhite h-4 border-2 border-solid border-zenno-3black shadow-custom mt-[4.44rem]"
+            className="flex justify-center items-center w-[21.625rem] relative rounded-[1.25rem] bg-zenno-mwhite h-4 border-2 border-solid border-zenno-3black shadow-custom"
             action="#"
           >
             <input
@@ -400,7 +400,8 @@ const Home = () => {
             {/* {isModalOpen && <BookModal book={selectedBook} onClose={closeBookModal} />} */}
           </div>
         </Suspense>
-        <div className="flex items-center justify-center ">
+        <Slideshow />
+        <div className="flex items-center justify-center mt-[3.18rem]">
           <div className="w-[20.3125rem] h-[34.9375rem] bg-zenno-orange rounded-[1.5rem]">
             <div className="text-zenno-1white text-[1.5rem] not-italic font-bold leading-[1.65rem] mt-[2.68rem] mr-[4.31rem] ml-[4.31rem] w-[11.6875rem]">
               <p className="text-center">
@@ -422,7 +423,7 @@ const Home = () => {
           </div>
         </div>
 
-        <footer className="w-full h-[60.75rem] bg-zenno-3black mt-[3.12rem]">
+        <footer className="w-full h-[60.75rem] bg-zenno-3black mt-[4.18rem]">
           <div className="p-[4rem]">
             <div className="logo">
               <img src={logo} alt="" />
