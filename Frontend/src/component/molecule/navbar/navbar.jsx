@@ -7,10 +7,14 @@ import image1 from '/src/assets/Vector (1).png';
 import hamburger from '../../../assets/menu.svg';
 import exit from '../../../assets/menu (1).svg';
 import line from '../../../assets/Line 7.png';
-import {Link} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import {useState} from 'react';
 
 const Navbar = () => {
+  const [activeLink, setActiveLink] = useState('home');
+  // const handleClick = link => {
+  //   setActiveLink(link);
+  // };
   const [menuOpen, setMenuOpen] = useState(false);
   const handleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -26,11 +30,16 @@ const Navbar = () => {
         </div>
         <div className="center ">
           <ul className="flex gap-space400">
-            <li className="text-zenno-black text-center text-base hover:underline w-51 h-17">
-              Home
+            <li className="text-zenno-black text-center text-base w-51 h-17">
+              <NavLink to="/" activeClassName="active">
+                Home
+              </NavLink>
             </li>
-            <li className="text-zenno-black text-center text-base hover:underline w-75 h-17">
-              <Link to="/aboutUs">About Us</Link>
+            <li className="text-zenno-black text-center text-base w-75 h-17">
+              <NavLink to="/aboutUs" activeClassName="active">
+                {' '}
+                About Us
+              </NavLink>
             </li>
             <li className="text-zenno-black text-center text-base hover:underline  h-17">
               Contact
@@ -71,14 +80,24 @@ const Navbar = () => {
               />
             </div>
 
-            <ul className="flex flex-col items-center justify-center h-full uppercase p-[4px] md:pb-[8rem] sm:pb-[33rem]">
-              <li className="p-[4px]">
+            <ul className="flex flex-col items-center justify-center h-full uppercase p-[4px] md:pb-[8rem]">
+              <li className="p-[4px] mb-[6rem]">
                 {' '}
                 <img src={line} alt="" className="flex flex-col" />
               </li>
-              <li className="p-[4px] border-b border-gray-600">Home</li>
-              <li className="p-[4px] border-b border-gray-600">About Us</li>
-              <li className="p-[4px] border-b border-gray-600">Contact</li>
+              <li className="p-[4px] border-b border-gray-600 mb-[6rem]">
+                <NavLink to="/" activeClassName="active">
+                  Home
+                </NavLink>
+              </li>
+              <li className="p-[4px] border-b border-gray-600 mb-[6rem]">
+                {' '}
+                <NavLink to="/aboutUs" activeClassName="active">
+                  {' '}
+                  About Us
+                </NavLink>
+              </li>
+              <li className="p-[4px] border-b border-gray-600 mb-[6rem]">Contact</li>
             </ul>
           </div>
         )}
