@@ -143,6 +143,10 @@ ul {
     white-space: nowrap;
     transition: ease 1000ms;
   }
+
+  .active {
+    color: #d7caca;
+  }
 }
 
 /* 
