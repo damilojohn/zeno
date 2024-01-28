@@ -87,7 +87,7 @@ const Home = () => {
                     Discover books that <br />
                     match your imagination.
                 </div> */}
-        <div className="form-main">
+        <div className="form-main" id="top">
           <form className="form-container" action="#">
             <input
               type="text"
