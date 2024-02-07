@@ -25,20 +25,27 @@ const Navbar = () => {
   return (
     <>
       <div className="md:hidden lg:hidden 2xl:flex  bg-zenno-white justify-between px-[3.12rem] py-[2.31rem] w-auto shadow-lg items-baseline">
-        <div className="text-zenno-black w-84">
+        <div className="text-zenno-black w-84 ">
           <img src={image} alt="zeeno" className="image-style-1" />
         </div>
         <div className="center ">
           <ul className="flex gap-space400">
             <li className="text-zenno-black text-center text-base w-51 h-17">
               <NavLink to="/" activeClassName="active">
-                Home
+                {' '}
+                <p className="hover:text-zenno-orange cursor-pointer duration-200">
+                  {' '}
+                  Home
+                </p>
               </NavLink>
             </li>
             <li className="text-zenno-black text-center text-base w-75 h-17">
               <NavLink to="/aboutUs" activeClassName="active">
                 {' '}
-                About Us
+                <p className="hover:text-zenno-orange cursor-pointer duration-200">
+                  {' '}
+                  About Us
+                </p>
               </NavLink>
             </li>
             <li className="text-zenno-black text-center text-base hover:underline  h-17">
