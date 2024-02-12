@@ -7,6 +7,7 @@ import background from '../../assets/Group 175.png';
 import mobilebg from '../../assets/Group 1756.png';
 import Footer from '../../component/molecule/footer/footer';
 import {Link} from 'react-router-dom';
+import {motion} from 'framer-motion';
 
 const About = () => {
   // const history = useHistory();
@@ -17,7 +18,12 @@ const About = () => {
 
   return (
     <>
-      <div className="md:hidden sm:hidden lg:hidden xl:block">
+      <motion.div
+        initial={{opacity: 0, y: -50}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 3}}
+        className="md:hidden sm:hidden lg:hidden xl:block"
+      >
         <Navbar />
         <div className="h-[27.5rem] flex justify-center flex-col items-center px-[23.94rem] py-[4.69rem] bg-zenno-aboutw gap-[0.625rem]">
           <div className="flex flex-col items-center gap-[2.75rem]">
@@ -282,7 +288,7 @@ const About = () => {
         </div>
         {/* ////////////////////// ///////*/}
         <Footer />
-      </div>
+      </motion.div>
 
       {/* MOBILE */}
       {/* //////////////////////////////////////// */}
