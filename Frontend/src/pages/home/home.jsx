@@ -15,6 +15,7 @@ import Slideshow from '../../component/slider/slider.jsx';
 import Footer from '../../component/molecule/footer/footer.jsx';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import {motion} from 'framer-motion';
 
 const Home = () => {
   const [userInput, setUserInput] = useState('');
@@ -78,7 +79,12 @@ const Home = () => {
   };
   return (
     <React.Fragment>
-      <div className="md:hidden sm:hidden lg:hidden xl:block">
+      <motion.div
+        initial={{opacity: 0, y: -50}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 3}}
+        className="md:hidden sm:hidden lg:hidden xl:block"
+      >
         <Navbar />
         {/* <Preload loading={loading} /> */}
         {loading && <Loader loading={loading} />}
@@ -197,7 +203,7 @@ const Home = () => {
         </div>
 
         <Footer />
-      </div>
+      </motion.div>
       {/*      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
       <div className="2xl:hidden sm:block md:block sm:w-full lg:block">
