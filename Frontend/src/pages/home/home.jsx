@@ -82,8 +82,8 @@ const Home = () => {
       <motion.div
         initial={{opacity: 0, y: -50}}
         animate={{opacity: 1, y: 0}}
-        transition={{duration: 3}}
-        className="md:hidden sm:hidden lg:hidden xl:block"
+        transition={{duration: 2}}
+        className="md:hidden sm:hidden lg:hidden xl:block 2xl:block 2xl-max:block"
       >
         <Navbar />
         {/* <Preload loading={loading} /> */}
@@ -154,7 +154,11 @@ const Home = () => {
                     <p> {book.title} </p>
                   </div>
                   <div className="thumbnail">
-                    <img src={book.thumbnail} alt="Description of the image" className="mx-auto my-auto"></img>
+                    <img
+                      src={book.thumbnail}
+                      alt="Description of the image"
+                      className="mx-auto my-auto"
+                    ></img>
                   </div>
                   <div className="text-[0.9375rem] font-semibold text-zenno-3black leading-[1.40625rem] text-center w-[10rem]">
                     {' '}
@@ -206,7 +210,7 @@ const Home = () => {
       </motion.div>
       {/*      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
-      <div className="2xl:hidden sm:block md:block sm:w-full lg:block">
+      <div className="2xl:hidden sm:block md:block sm:w-full lg:block  2xl-max:hidden">
         <Navbar />
 
         {loading && <Loader loading={loading} />}
