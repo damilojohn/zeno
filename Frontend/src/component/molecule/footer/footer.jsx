@@ -9,12 +9,12 @@ const Footer = () => {
   return (
     <>
       <footer>
-        <div className="md:hidden lg:hidden w-full h-[31.25rem] border-solid border-[2px] border-black mt-[12.25rem] flex bg-zenno-3black text-zenno-white p-[2rem]">
+        <div className="md:hidden lg:hidden w-full h-[31.25rem] border-solid border-[2px] border-black mt-[12.25rem] flex bg-zenno-3black text-zenno-white p-[2rem] 2xl-max:flex 2xl-max:justify-center 2xl-max:items-center">
           <div className="relative w-[24.5624rem] xl:w-full">
             <img
               src={logo}
               alt=""
-              className="absolute left-[0.3125rem] bottom-[-1.72869rem] max-w-none"
+              className="absolute left-[0.3125rem] bottom-[-1.72869rem] max-w-none 2xl-max:bottom-[-13.72869rem]"
             />
             {/* osition: absolute; left: 2.3125rem; bottom: 10.27131rem width: 24.5624rem; 0.3125rem*/}
           </div>
@@ -114,7 +114,7 @@ const Footer = () => {
       </footer>
       {/* MOBILE */}
 
-      <footer className="w-full h-[60.75rem] bg-zenno-3black mt-[4.18rem] 2xl:hidden sm:block md:block sm:w-full lg:block">
+      <footer className="w-full h-[60.75rem] bg-zenno-3black mt-[4.18rem] 2xl:hidden sm:block md:block sm:w-full lg:block 2xl-max:hidden">
         <div className="p-[4rem]">
           <div className="logo">
             <img src={logo} alt="" />
