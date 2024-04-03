@@ -5,3 +5,17 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/public/fonts/CabinetGrotesk-Black.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Regular.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Bold.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Extrabold.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Extralight.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Light.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Medium.otf') format('otf'),
+    url('/public/fonts/CabinetGrotesk-Thin.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+}
