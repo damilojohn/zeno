@@ -154,11 +154,7 @@ const Home = () => {
                     <p> {book.title} </p>
                   </div>
                   <div className="thumbnail">
-                    <img
-                      src={book.thumbnail}
-                      alt="Description of the image"
-                      className="mx-auto my-auto"
-                    ></img>
+                    <img src={book.thumbnail} alt="Description of the image" className="mx-auto my-auto"></img>
                   </div>
                   <div className="text-[0.9375rem] font-semibold text-zenno-3black leading-[1.40625rem] text-center w-[10rem]">
                     {' '}
