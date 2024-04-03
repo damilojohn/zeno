@@ -104,6 +104,7 @@ export default {
       space1000: '5rem',
     },
     screens: {
+      '2xl-max': {max: '2900px'},
       '2xl': {max: '1535px'},
       // => @media (max-width: 1535px) { ... }
 
