@@ -1,4 +1,8 @@
-body {
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* body {
   margin: 0;
   scroll-behavior: smooth;
   background-color: #F5F5F5;
@@ -18,4 +22,199 @@ body {
     url('/public/fonts/CabinetGrotesk-Thin.otf') format('otf');
   font-weight: normal;
   font-style: normal;
+} */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* 
+*{
+  body {
+   
+  
+  }
+  margin: 0;
+  padding: 0;
+
+  min-width: 320px;
+  min-height: 100vh;
+  
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+  }
+  
+  ul {
+    margin: 0;
+  }
+} */
+/* Reset CSS */
+/* * {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
 }
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+}
+ */
+
+@layer components {
+  .search {
+    width: 47px;
+    height: 36.56px;
+    background-color: theme('colors.zenno-orange');
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* font-family: 'News701 BT'; */
+    margin: 4.18rem 0 0 0;
+
+  }
+
+  .form-container {
+    display: flex;
+    justify-content: center;
+
+    /* justify-content: space-around; */
+    align-items: center;
+
+    /* height: 46px; */
+    width: 857px;
+    margin: 4rem 3rem;
+    border-radius: 1.375rem;
+    border: 2px solid #000;
+    background: #F9FAFB;
+    box-shadow: 0px 4px 0px 0px #141414;
+    background-color: #F9FAFB;
+    position: relative;
+  }
+
+  .slideShow {
+    /* Slideshow */
+    margin: 0 auto;
+    overflow: hidden;
+    /* max-width: 500px; */
+    margin-top: 3.18rem;
+
+  }
+
+  .slide {
+    height: 68px;
+    width: 100%;
+    border-radius: 40px;
+    display: inline-block;
+    color: #000000;
+    font-size: 26px;
+    line-height: 39px;
+    text-align: justify;
+  }
+
+  .slideshowSlider {
+    white-space: nowrap;
+    transition: ease 1000ms;
+  }
+
+  .active {
+    color: #d7caca;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+
+  }
+
+  .modal.active {
+    display: block;
+
+  }
+
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 73.25rem;
+    height: 98.9375rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    /* @media only screen and (min-width: 768px) {
+      width: 23.3125rem;
+    }
+    @media only screen and (min-width : 768px){
+      width: 23.3125rem;
+    } */
+  }
+
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .book {
+    display: flex;
+    background: lightgray 50% / cover no-repeat;
+  }
+
+  .image {
+    background-color: lightgray 50%;
+  }
+}
+
+/* 
+@layer base {
+  img  {
+    display: flex;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+  }
+} */
