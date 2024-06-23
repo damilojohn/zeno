@@ -1,2 +1,2 @@
 sentence-transformers
-pinecone-client
+pinecone-client[grpc]

@@ -1,20 +1,22 @@
-import pinecone 
+from pinecone.grpc import PineconeGRPC as pinecone
 import os
 import logging
 import json
 from sentence_transformers import SentenceTransformer
 
-encoder = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+encoder = SentenceTransformer('Snowflake/snowflake-arctic-embed-m')
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info('connecting to vectordb')
-pinecone.init(
-    api_key=os.getenv('PINECONE_API_KEY'),
-    environment=os.getenv('PINECONE_ENV')
+
+PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
+
+pc = pinecone(
+    api_key=PINECONE_API_KEY
 )
 index_name = 'zeno'
-index = pinecone.Index(index_name)
+index = pc.Index(index_name)
 logger.info('connected to index....')
 
 
