@@ -17,6 +17,8 @@ jobs:
       defaults:
           run:
               shell: bash
+          env:
+            ECR_URI: 547882234658.dkr.ecr.us-east-1.amazonaws.com
       steps: 
         - uses: actions/checkout@v3
 
@@ -30,13 +32,13 @@ jobs:
 
         - name: Deploy to ECR
           run: |
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 547882234658.dkr.ecr.us-east-1.amazonaws.com
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URI
             ls 
             pwd
             docker build -t zeno . 
             docker tag zeno:latest 547882234658.dkr.ecr.us-east-1.amazonaws.com/zeno:latest
             docker push 547882234658.dkr.ecr.us-east-1.amazonaws.com/zeno:latest
           env: 
-            $ECR_REPO_URI: ${{ secrets.ECR_REPO_URI }}
+            $ECR_REPO_URI: ${{ env.ECR_URI }}
             $ECR_REPO_NAME: ${{ secrets.ECR_REPO_NAME }}
         

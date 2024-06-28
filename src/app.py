@@ -4,6 +4,7 @@ import logging
 import json
 from sentence_transformers import SentenceTransformer
 
+
 encoder = SentenceTransformer('Snowflake/snowflake-arctic-embed-m')
 
 logger = logging.getLogger()
@@ -17,7 +18,7 @@ pc = pinecone(
 )
 index_name = 'zeno'
 index = pc.Index(index_name)
-logger.info('connected to index....')
+logger.info('connected to vectordb....')
 
 
 def query_db(index, query):

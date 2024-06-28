@@ -1,26 +1,34 @@
-import pinecone
+from pinecone.grpc import PineconeGRPC as pinecone
 import pandas as pd
 from tqdm.auto import tqdm
 from sentence_transformers import SentenceTransformer
 import os
+import torch
 
 PINECONE_API_KEY = os.environ['PINECONE_API_KEY']
 data = pd.read_csv('books.csv')
-pinecone.init(
-    api_key='2b6ebef8-017d-450f-a640-6ed98916182f',
-    environment='us-west1-gcp'
-)
-index_name = 'zeno'
-if index_name not in pinecone.list_indexes():
-    pinecone.create_index(
-        index_name,
-        dimension=384,
-        metric='cosine',
-    )
 
-index = pinecone.Index(index_name)
+encoder = SentenceTransformer('Snowflake/snowflake-arctic-embed-m')
+
+pc = pinecone(
+    api_key=PINECONE_API_KEY,
+)
+
+index_name = 'zeno'
+if index_name not in pc.list_indexes().indexes[0]['name']:
+  pc.create_index(
+      index_name,
+      dimension=embed_dim,
+      metric='cosine',
+      spec = ServerlessSpec(
+          cloud='aws',
+          region='us-east-1'
+      )
+  )
+index = pc.Index(index_name)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 encoder = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 encoder.to(device)
 
@@ -35,14 +43,14 @@ def build_index(data, encoder, batch_size):
             {
                 'title': x[0],
                 'isbn10': x[1],
-                'thumbnail':x[2],
-                'description':x[3],
-                'authors':x[4],
-                'average_rating':x[5],
+                'thumbnail': x[2],
+                'description': x[3],
+                'authors': x[4],
+                'average_rating': x[5],
                 'isbn13': x[6],
-                'categories':x[7],
-                'published_year':x[8]}
-                for x in zip(
+                'categories': x[7],
+                'published_year': x[8]}
+            for x in zip(
                     batch['title'],
                     batch['isbn10'],
                     batch['thumbnail'],
