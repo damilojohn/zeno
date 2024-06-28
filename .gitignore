@@ -1,3 +1,4 @@
 .idea
 .vscode
 venv
+./github/workflows/build-test-deploy
