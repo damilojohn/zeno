@@ -30,7 +30,7 @@ def query_db(index, query):
     response = []
     for i in range(len(matches)):
         response.append(matches[i]['metadata'])
-    return response       
+    return response
 
 
 def lambda_handler(event, _context):

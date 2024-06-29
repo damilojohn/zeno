@@ -7,7 +7,8 @@ on:
 permissions:
   contents: read
   id-token: write
-    
+env:
+  ECR_URI: 547882234658.dkr.ecr.us-east-1.amazonaws.com    
 jobs: 
     zeno:
       name: 'zeno'
@@ -17,8 +18,7 @@ jobs:
       defaults:
           run:
               shell: bash
-          env:
-            ECR_URI: 547882234658.dkr.ecr.us-east-1.amazonaws.com
+          
       steps: 
         - uses: actions/checkout@v3
 
