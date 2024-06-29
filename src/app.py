@@ -3,7 +3,7 @@ import os
 import logging
 import json
 from sentence_transformers import SentenceTransformer
-
+from dotenv import load_dotenv
 
 encoder = SentenceTransformer('Snowflake/snowflake-arctic-embed-m')
 
@@ -11,11 +11,13 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info('connecting to vectordb')
 
+load_dotenv()
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 
 pc = pinecone(
-    api_key=PINECONE_API_KEY
+    api_key='6bd9e5ec-ffbd-4897-a77b-0f6d6188185c'
 )
+
 index_name = 'zeno'
 index = pc.Index(index_name)
 logger.info('connected to vectordb....')
