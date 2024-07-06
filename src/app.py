@@ -1,4 +1,5 @@
 from pinecone.grpc import PineconeGRPC as pinecone
+from pinecone import ServerlessSpec
 import os
 import logging
 import json
@@ -15,7 +16,7 @@ load_dotenv()
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 
 pc = pinecone(
-    api_key='6bd9e5ec-ffbd-4897-a77b-0f6d6188185c'
+    api_key=PINECONE_API_KEY
 )
 
 index_name = 'zeno'
