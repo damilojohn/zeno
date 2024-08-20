@@ -5,7 +5,7 @@ import logging
 import json
 from sentence_transformers import SentenceTransformer
 
-encoder = SentenceTransformer('Snowflake/snowflake-arctic-embed-m')
+encoder = SentenceTransformer('mixedbread-ai/mxbai-embed-large-v1')
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
