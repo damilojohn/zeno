@@ -1,3 +1,2 @@
 sentence-transformers
-pinecone-client[grpc] --upgrade
-python-dotenv
+pinecone-client[grpc]
