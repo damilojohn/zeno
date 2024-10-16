@@ -1,5 +1,4 @@
 from pinecone.grpc import PineconeGRPC as pinecone
-from pinecone import ServerlessSpec
 import os
 import logging
 import json
