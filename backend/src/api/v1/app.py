@@ -15,7 +15,7 @@ PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 pc = pinecone(
     api_key=PINECONE_API_KEY
 )
-print(PINECONE_API_KEY)
+
 index_name = 'zeno'
 index = pc.Index(index_name)
 logger.info('connected to vectordb....')
