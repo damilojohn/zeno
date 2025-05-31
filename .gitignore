@@ -1,4 +1,15 @@
 .idea
 .vscode
 /data
+
+#ci/cd
 ./github/workflows/build-test-deploy
+
+#environments
+*.venv
+
+#python
+__pycache__
+*.pyc
+
+

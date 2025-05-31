@@ -7,7 +7,7 @@ from sqlalchemy import (
     String,
     ForeignKey
     )
-from sqlalchemy.orm import (Mapped, 
+from sqlalchemy.orm import (Mapped,
                             mapped_column,
                             relationship
                             )
@@ -39,7 +39,7 @@ class User(RecordModel):
     searches = relationship("SearchHistory", back_populates="user")
     favorite_books = relationship("FavoriteBook", back_populates="user")
     reading_lists = relationship("ReadingList", back_populates="user")
-  
+
 
 class SearchHistory(RecordModel):
     __tablename__ = "search_history"

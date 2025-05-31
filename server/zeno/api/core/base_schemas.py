@@ -10,7 +10,7 @@ from zeno.api.core.utils import current_time, generate_uuid
 
 
 class Model(DeclarativeBase):
-    __abstract__ = True
+    __abstract__ = True # sqlachemy doesn't create tables for these classes
 
 
 class TimeStampedModel(Model):
