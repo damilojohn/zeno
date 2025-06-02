@@ -1,14 +1,11 @@
 from pydantic import BaseModel
 
 
-class user(BaseModel):
+class UserBase(BaseModel):
     username: str
     email: str
     is_verified: bool = False
 
 
-class UserCreate(BaseModel):
-    username: str
-    email: str
+class UserCreate(UserBase):
     password: str
-
