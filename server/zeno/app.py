@@ -12,13 +12,14 @@ from zeno.api.core.db import (_create_engine,
                               create_session,
                               Engine,
                               SessionMaker,
+                              init_db
                               )
 
 from zeno.api.core.config import Settings
 # from zeno.api.search.endpoints import router as search_router
 from zeno.api.user.endpoints import router as user_router
 
-LOG = structlog.get_logger()
+LOG = structlog.stdlib.get_logger()
 
 
 class State(TypedDict):
@@ -36,7 +37,7 @@ def configure_cors(app: FastAPI, settings: Settings) -> None:
     )
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[State]:
+async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
     LOG.info("Zeno API starting.....")
 
     # set up app state
@@ -44,8 +45,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[State]:
 
     settings = Settings()
     engine = _create_engine(settings.database_url)
+    init_db(engine, settings)
     session_maker = create_session(engine)
-    configure_cors(app, settings)
 
     try:
         LOG.info("Zeno API started.......")
@@ -67,6 +68,8 @@ def create_app() -> FastAPI:
 
     # add routers
     # app.include_router(search_router)
+    settings = Settings()
+    configure_cors(app, settings)
     app.include_router(user_router)
 
     return app
@@ -77,7 +80,7 @@ app = create_app()
 if __name__ == "__main__":
     LOG.info("server starting.....", host="0.0.0.0")
     uvicorn.run(
-        "app:app",
+        "zeno.app:app",
         host="0.0.0.0",
         log_level="info",
         port=8000,

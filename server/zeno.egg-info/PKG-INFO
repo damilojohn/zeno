@@ -4,6 +4,7 @@ Version: 0.1.0
 Summary: Backend for Zeno, a Semantic Search based books recommendation engine
 Requires-Python: >=3.13
 Description-Content-Type: text/markdown
+Requires-Dist: alembic>=1.16.1
 Requires-Dist: annotated-types==0.7.0
 Requires-Dist: anyio==4.9.0
 Requires-Dist: click==8.1.8
@@ -14,6 +15,7 @@ Requires-Dist: h11==0.14.0
 Requires-Dist: idna==3.10
 Requires-Dist: numpy==2.2.4
 Requires-Dist: pgvector==0.4.0
+Requires-Dist: psycopg2>=2.9.10
 Requires-Dist: pydantic==2.11.2
 Requires-Dist: pydantic-core==2.33.1
 Requires-Dist: pydantic-settings>=2.9.1

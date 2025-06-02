@@ -13,7 +13,6 @@ zeno/api/core/config.py
 zeno/api/core/db.py
 zeno/api/core/middleware.py
 zeno/api/core/security.py
-zeno/api/core/settings.py
 zeno/api/core/utils.py
 zeno/api/endpoints/auth.py
 zeno/api/endpoints/books.py
@@ -40,3 +39,4 @@ zeno/api/user/service.py
 zeno/api/v1/app.py
 zeno/api/v1/build-index.py
 zeno/api/v1/scraper.py
+zeno/scripts/migration/db_migrate.py

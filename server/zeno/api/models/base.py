@@ -1,15 +1,17 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import TIMESTAMP, Uuid, inspect
 
 
 from zeno.api.core.utils import current_time, generate_uuid
 
+Base = declarative_base()
 
-class Model(DeclarativeBase):
+
+class Model(Base):
     __abstract__ = True  # sqlachemy doesn't create tables for these classes
 
 
@@ -18,7 +20,8 @@ class TimeStampedModel(Model):
 
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        nullable=False, index=True, default=current_time,
+        nullable=False,
+        default=current_time,
         index=True
         )
 
@@ -37,6 +40,7 @@ class TimeStampedModel(Model):
 
 
 class RecordModel(TimeStampedModel):
+    __abstract__ = True
     id: Mapped[UUID] = mapped_column(Uuid,
                                      primary_key=True,
                                      index=True,

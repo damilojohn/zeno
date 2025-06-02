@@ -1,39 +1,38 @@
-import os
-from dotenv import load_dotenv
-
-from pydantic import Field, PostgresDsn
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-print(DATABASE_URL)
-CORS_ORIGIN = os.getenv("CORS_ORIGINS")
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL")
-
-
 class Settings(BaseSettings):
-    database_url: str = Field(DATABASE_URL,
-                              alias="db conn string",
+    env: str = Field(...,
+                     alias="ENVIRONMENT")
+    use_alembic : bool = Field(
+        default=False)
+    database_url: str = Field(...,
+                              alias="DATABASE_URL",
                                       )
-    cors_origin: str = Field(CORS_ORIGIN,
-                             alias="CORS_ORIGIN",
+    cors_origin: str = Field(...,
+                             alias="CORS_ORIGINS",
                              )
-    google_client_id: str = Field(GOOGLE_CLIENT_ID,
+    google_client_id: str = Field(...,
                                   alias="GOOGLE_CLIENT_ID",
                                   )
-    google_client_secret: str = Field(GOOGLE_CLIENT_SECRET,
+    google_client_secret: str = Field(...,
                                       alias="GOOGLE_CLIENT_SECRET",
                                       )
-    gemini_api_key: str = Field(GEMINI_API_KEY,
+    gemini_api_key: str = Field(...,
                                 alias="GEMINI_API_KEY",
                                 )
-    gemini_model: str = Field(GEMINI_MODEL,
+    gemini_model: str = Field(...,
                               alias="GEMINI_MODEL",
                               )
 
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+    
+    @property
+    def is_development(self) -> bool:
+        return self.env == "development"
+    
+    @property
+    def is_production(self) -> bool:
+        return self.env == "production"
