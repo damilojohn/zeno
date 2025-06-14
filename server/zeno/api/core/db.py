@@ -7,7 +7,7 @@ from typing import TypeAlias
 from collections.abc import AsyncGenerator
 import structlog
 
-from fastapi import Depends, Request
+from fastapi import Request
 
 LOG = structlog.stdlib.get_logger()
 
@@ -18,41 +18,32 @@ def _create_engine(conn_string: str):
 
 
 def create_session(engine: Engine):
-    return sessionmaker(auto_commit=False, auto_flush=False, bind=engine)
+    return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 SessionMaker: TypeAlias = sessionmaker[Session]
 
 
 # dependencies for getting db session
-async def get_db_sessionmaker(
-        request: Request) -> AsyncGenerator[SessionMaker]:
-    session_maker = request.state.session
-    yield session_maker
-
-
 async def get_db_session(
         request: Request,
-        session_maker: SessionMaker = Depends(get_db_sessionmaker)
 ) -> AsyncGenerator[Session]:
-    with session_maker() as session:
-        if session := request.state.getattr("session", None):
-            yield session
-        else:
-            try:
-                session = session_maker()
-                yield session
-            except Exception as e:
-                await session.rollback()
-                raise e
-            finally:
-                session.close()
+    session_maker = request.app.state.session_maker
+    session: Session = session_maker()
+    try:
+        yield session
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
 
 
 def create_tables_dev(engine: Engine):
     try:
-        LOG.info("🔄 Dropping all tables...")
-        Base.metadata.drop_all(bind=engine)
+        # LOG.info("🔄 Dropping all tables...")
+        # Base.metadata.drop_all(bind=engine)
         LOG.info("🔄 Creating all tables...")
         Base.metadata.create_all(bind=engine)
     except Exception as e:
@@ -94,6 +85,7 @@ def init_db(engine: Engine, settings: Settings):
     if settings.is_development:
         LOG.info("setting up tables using create_all() ....")
         with engine.connect() as conn:
+            # Create pgvector extension
             conn.execute(text('CREATE EXTENSION IF NOT EXISTS vector'))
             conn.commit()
         create_tables_dev(engine)

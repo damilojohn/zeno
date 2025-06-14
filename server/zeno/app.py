@@ -36,24 +36,25 @@ def configure_cors(app: FastAPI, settings: Settings) -> None:
         allow_headers=["*"],
     )
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
     LOG.info("Zeno API starting.....")
 
-    # set up app state
-    # load global settings
+    # set up app state and load global settings
 
     settings = Settings()
     engine = _create_engine(settings.database_url)
     init_db(engine, settings)
     session_maker = create_session(engine)
+    app.state.session_maker = session_maker
 
     try:
         LOG.info("Zeno API started.......")
 
         yield {
             "engine": engine,
-            "session": session_maker
+            "session_maker": session_maker
             }
     finally:
         engine.dispose()

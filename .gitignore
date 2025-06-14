@@ -7,6 +7,7 @@
 
 #environments
 *.venv
+*zeno.egg-info
 
 #python
 __pycache__
