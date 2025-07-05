@@ -20,7 +20,7 @@ from zeno.api.core.config import Settings
 from zeno.api.user.endpoints import router as user_router
 
 LOG = structlog.stdlib.get_logger()
-
+settings = Settings()
 
 class State(TypedDict):
     engine: Engine
@@ -42,8 +42,6 @@ async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
     LOG.info("Zeno API starting.....")
 
     # set up app state and load global settings
-
-    settings = Settings()
     engine = _create_engine(settings.database_url)
     init_db(engine, settings)
     session_maker = create_session(engine)
@@ -69,7 +67,6 @@ def create_app() -> FastAPI:
 
     # add routers
     # app.include_router(search_router)
-    settings = Settings()
     configure_cors(app, settings)
     app.include_router(user_router)
 
