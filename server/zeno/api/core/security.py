@@ -1,5 +1,5 @@
 from zeno.api.core.config import Settings
-
+from zeno.api.core.utils import LOG
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 import jwt
@@ -52,6 +52,7 @@ def create_refresh_token(data: dict):
         settings.jwt_refresh_secret_key,
         algorithm=settings.jwt_algorithm
     )
+    LOG.info("user refresh token created...")
     return token
 
 
@@ -62,24 +63,28 @@ def verify_access_token(token: str):
             settings.jwt_secret_key,
             algorithms=settings.jwt_algorithm
         )
-        return payload['id']
-    except jwt.ExpiredSignatureError:
-        raise ValueError("Access token has expired")
-    except jwt.PyJWTError:
-        raise ValueError("Invalid access token")
+        return payload['username']
+    except jwt.ExpiredSignatureError as e:
+        LOG.info(f"Access token validation failed with error :{str(e)}")
+        raise ValueError("Access token has expired") from e
+    except jwt.PyJWTError as e:
+        LOG.info(f"Access token validation failed with error :{str(e)}")
+        raise ValueError("Invalid access token") from e
 
 
 def verify_refresh_token(token: str):
     try:
         payload = jwt.decode(
             token,
-            settings.jwt_secret_key,
+            settings.jwt_refresh_secret_key,
             algorithms=[settings.jwt_algorithm]
         )
         if payload.get("token_type") != "refresh":
             raise ValueError("Invalid token type")
-        return payload
-    except jwt.ExpiredSignatureError:
-        raise ValueError("Refresh token has expired")
-    except jwt.PyJWTError:
-        raise ValueError("Invalid refresh token")
+        return payload["username"]
+    except jwt.ExpiredSignatureError as e:
+        LOG.info(f"refresh token validation failed with error :{str(e)}")
+        raise ValueError("Refresh token has expired") from e
+    except jwt.PyJWTError as e:
+        LOG.info(f"Refresh token validation failed with error :{str(e)}")
+        raise ValueError("Invalid refresh token") from e

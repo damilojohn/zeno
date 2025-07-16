@@ -26,14 +26,14 @@ oauth2scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 async def get_current_user(token: str = Depends(oauth2scheme),
                            session: Session = Depends(get_db_session)) -> User:
     try:
-        id = verify_access_token(token)
-    except Exception:
+        username = verify_access_token(token)
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token"
-        )
+        ) from e
     user = session.query(User).filter(
-        User.id == id
+        User.username == username
     ).first()
     if user:
         return user
@@ -78,8 +78,8 @@ async def add_new_user(
         # Generate tokens
         try:
 
-            access_token = create_access_token({"id": str(db_user.id)})
-            refresh_token = create_refresh_token({"id": str(db_user.id)})
+            access_token = create_access_token({"username": str(db_user.username)})
+            refresh_token = create_refresh_token({"username": str(db_user.username)})
         except Exception as e:
             LOG.info(f"failed with error {e}")
             raise e
@@ -98,7 +98,7 @@ async def add_new_user(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error creating user"
-        )
+        ) from e
 
 
 async def authenticate_user(user: LoginRequest,
@@ -110,17 +110,34 @@ async def authenticate_user(user: LoginRequest,
         if not verify_password(user.password, db_user.hashed_password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                details="Invalid credentials"
+                detail="Invalid credentials"
             )
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            details="User does not exist"
+            detail="User does not exist"
         )
     return TokenResponse(
-        access_token=create_access_token(data={"id": str(db_user.id)}),
+        access_token=create_access_token(data={"username": str(db_user.username)}),
+        refresh_token=create_refresh_token(data={"username":str(db_user.username)}),
         token_type="bearer"
     )
+
+
+def get_refresh_token(token: str = Depends(oauth2scheme)):
+    try:
+        payload = verify_refresh_token(token)
+        if payload:
+            return TokenResponse(
+                access_token = create_access_token({"username": payload}),
+                refresh_token = "",
+                token_type="bearer"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        ) from e
 
 
 # async def handle_google_oauth(

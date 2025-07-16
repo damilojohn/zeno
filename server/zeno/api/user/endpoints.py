@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Request
 
 from zeno.api.user.schemas import (
     UserCreate,
     UserResponse,
     LoginRequest,
     RegisterResponse,
+    RefreshRequest,
     TokenResponse
 )
 from zeno.api.models.users import User
@@ -12,7 +13,8 @@ from zeno.api.core.db import get_db_session, Session
 from zeno.api.user.service import (
     get_current_user,
     add_new_user,
-    authenticate_user
+    authenticate_user,
+    get_refresh_token
 )
 
 router = APIRouter(prefix="/v2/auth", tags=["users"])
@@ -42,8 +44,8 @@ async def register_user(
     Register a new user with email and password.
     """
     try:
-        user = await add_new_user(user, session)
-        return user
+        new_user = await add_new_user(user, session)
+        return new_user
     except Exception as e:
         raise e
 
@@ -60,3 +62,12 @@ async def login(
     """
     return await authenticate_user(login_data, session)
 
+
+@router.post("/refresh",
+             response_model=TokenResponse,
+             status_code=200)
+def refresh_token(
+    request: RefreshRequest
+):
+    token = request.refresh_token
+    return get_refresh_token(token)

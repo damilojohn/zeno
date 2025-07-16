@@ -6,20 +6,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-import structlog
-
 from zeno.api.core.db import (_create_engine,
                               create_session,
                               Engine,
                               SessionMaker,
                               init_db
                               )
-
+from zeno.api.core.utils import LOG
 from zeno.api.core.config import Settings
 # from zeno.api.search.endpoints import router as search_router
 from zeno.api.user.endpoints import router as user_router
 
-LOG = structlog.stdlib.get_logger()
+
 settings = Settings()
 
 class State(TypedDict):
@@ -76,11 +74,11 @@ def create_app() -> FastAPI:
 app = create_app()
 
 if __name__ == "__main__":
-    LOG.info("server starting.....", host="0.0.0.0")
+    LOG.info("server starting.....", host=settings.host)
     uvicorn.run(
         "zeno.app:app",
-        host="0.0.0.0",
+        host=settings.host,
         log_level="info",
-        port=8000,
+        port=settings.port,
         reload=True
     )

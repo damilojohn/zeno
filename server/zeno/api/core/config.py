@@ -5,6 +5,13 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     env: str = Field(...,
                      alias="ENVIRONMENT")
+    host: str = Field(
+        ...,
+        alias="HOST"
+    )
+    port: int = Field(...,
+    alias="PORT"
+    )
     use_alembic: bool = Field(
         default=False)
     database_url: str = Field(...,

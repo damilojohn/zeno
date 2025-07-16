@@ -1,4 +1,4 @@
-from enum import StrEnum
+# from enum import StrEnum
 from uuid import UUID
 
 from sqlalchemy import (
@@ -11,13 +11,11 @@ from sqlalchemy.orm import (Mapped,
                             )
 
 
-from zeno.api.core.base_schemas import RecordModel
-
 
 class SearchHistory(RecordModel):
-    __tablename__ = "search_history"
+    __tablename__ = "searchHistory"
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    user = relationship("user", back_populates="search_history")
+    user = relationship("user", back_populates="searchHistory")
 
     query: Mapped[str] = mapped_column(String(256))

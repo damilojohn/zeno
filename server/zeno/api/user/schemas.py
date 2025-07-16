@@ -1,10 +1,10 @@
-from pydantic import BaseModel, EmailStr, StringConstraints
 from typing import Annotated
+from pydantic import BaseModel, EmailStr, StringConstraints
 
 
 class UserBase(BaseModel):
     username: str
-    email: str = ""
+    email: str | None = None
     is_verified: bool = False
 
 
@@ -31,12 +31,18 @@ class RegisterResponse(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
     token_type: str = "bearer"
 
 
 class LoginRequest(BaseModel):
     username: str
-    email: str = ''
+    email: str | None = None
     password: str
 
 
