@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, status, Request
+from typing import Annotated
+from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from zeno.api.user.schemas import (
     UserCreate,
@@ -63,6 +65,17 @@ async def login(
     return await authenticate_user(login_data, session)
 
 
+@router.post("/form-login",
+             response_model=TokenResponse,
+             status_code=200)
+async def form_login(data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                     session = Depends(get_db_session)):
+    user = LoginRequest(username=data.username,
+                        password=data.password)
+    return await authenticate_user(user, session)
+
+
+
 @router.post("/refresh",
              response_model=TokenResponse,
              status_code=200)
@@ -71,3 +84,4 @@ def refresh_token(
 ):
     token = request.refresh_token
     return get_refresh_token(token)
+

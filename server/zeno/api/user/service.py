@@ -20,7 +20,7 @@ from zeno.api.core.config import Settings
 
 settings = Settings()
 
-oauth2scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2scheme = OAuth2PasswordBearer(tokenUrl="/v2/auth/form-login")
 
 
 async def get_current_user(token: str = Depends(oauth2scheme),
@@ -40,7 +40,7 @@ async def get_current_user(token: str = Depends(oauth2scheme),
     else:
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
-            detail="Unable to get user...."
+            detail="Invalid authentication credentials...."
         )
 
 
@@ -109,8 +109,8 @@ async def authenticate_user(user: LoginRequest,
     if db_user:
         if not verify_password(user.password, db_user.hashed_password):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid credentials"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Incorrect username or password"
             )
     else:
         raise HTTPException(
@@ -134,9 +134,11 @@ def get_refresh_token(token: str = Depends(oauth2scheme)):
                 token_type="bearer"
             )
     except Exception as e:
+        LOG.info("Refresh token verification failed...",
+                 error=str(e))
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh token"
+            detail="Invalid token credentials"
         ) from e
 
 
