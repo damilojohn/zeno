@@ -14,6 +14,7 @@ dependencies = [
     "cryptography>=45.0.3",
     "fastapi==0.115.12",
     "greenlet==3.1.1",
+    "gunicorn>=23.0.0",
     "h11==0.14.0",
     "idna==3.10",
     "langchain-gemini>=0.1.1",
@@ -23,6 +24,7 @@ dependencies = [
     "pgvector==0.4.0",
     "psycopg2>=2.9.10",
     "psycopg2-binary>=2.9.10",
+    "pyarrow>=21.0.0",
     "pydantic==2.11.2",
     "pydantic-core==2.33.1",
     "pydantic-settings>=2.9.1",
@@ -43,7 +45,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.taskipy.tasks]
-api = { cmd = "uvicorn zeno.app:app --port=8000"}
+api = { cmd = "uvicorn zeno.app:app --port=8080"}
 
 [tool.poetry.packages]
 packages = [

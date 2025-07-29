@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 
-from backend.src.api.v2.db.session import get_db_session
+from zeno.api.core.db import get_db_session
 from backend.src.api.v2.endpoints.schemas import UserCreate
 import structlog
 

@@ -34,6 +34,7 @@ async def get_db_session(
         yield session
         session.commit()
     except Exception as e:
+        LOG.info(f"db session failed with exception {e}")
         session.rollback()
         raise e
     finally:
