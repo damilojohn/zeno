@@ -42,6 +42,8 @@ class Settings(BaseSettings):
                                 alias="JWT_EXP")
     jwt_refresh_exp: int = Field(...,
                                  alias="JWT_REFRESH_EXP")
+    reset_tok_exp: int = Field(...,
+                                alias="RESET_TOK_EXP")
 
     class Config:
         env_file = ".env"

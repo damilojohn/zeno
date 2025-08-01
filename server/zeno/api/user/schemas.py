@@ -56,3 +56,11 @@ class OAuthResponse(BaseModel):
     access_token: str
     refresh_token: str
     is_new_user: bool
+
+
+class PasswordResetRequest(BaseModel):
+    mail: EmailStr
+
+
+class ResetTokenResponse(BaseModel):
+    msg:str

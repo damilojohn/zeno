@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
+from fastapi.background import P
 from fastapi.security import OAuth2PasswordRequestForm
 
 from zeno.api.user.schemas import (
@@ -8,15 +9,19 @@ from zeno.api.user.schemas import (
     LoginRequest,
     RegisterResponse,
     RefreshRequest,
-    TokenResponse
+    TokenResponse,
+    PasswordResetRequest,
+    ResetTokenResponse
 )
+
 from zeno.api.models.users import User
 from zeno.api.core.db import get_db_session, Session
 from zeno.api.user.service import (
     get_current_user,
     add_new_user,
     authenticate_user,
-    get_refresh_token
+    get_refresh_token,
+    reset_password
 )
 
 router = APIRouter(prefix="/v2/auth", tags=["users"])
@@ -44,6 +49,13 @@ async def register_user(
 ):
     """
     Register a new user with email and password.
+
+    Args:
+    user: UserCreate Object
+    session: db_session
+
+    Returns:
+    RegisterResponse
     """
     try:
         new_user = await add_new_user(user, session)
@@ -61,6 +73,15 @@ async def login(
 ):
     """
     Login with email and password.
+
+    Args:
+
+    login_data: LoginRequest object
+    session: sqlalchemy session
+
+    Returns:
+    TokenResponse : access_token and refresh_token
+
     """
     return await authenticate_user(login_data, session)
 
@@ -70,6 +91,7 @@ async def login(
              status_code=200)
 async def form_login(data: Annotated[OAuth2PasswordRequestForm, Depends()],
                      session = Depends(get_db_session)):
+    """ """
     user = LoginRequest(username=data.username,
                         password=data.password)
     return await authenticate_user(user, session)
@@ -82,6 +104,27 @@ async def form_login(data: Annotated[OAuth2PasswordRequestForm, Depends()],
 def refresh_token(
     request: RefreshRequest
 ):
+    """
+    Refresh token endpoint. Validates refresh token
+    
+    """
     token = request.refresh_token
     return get_refresh_token(token)
 
+
+@router.post("/forgot-password",
+            response_model=ResetTokenResponse,
+            status_code=200)
+def forgot_password(
+                    request: PasswordResetRequest,
+                    user: User = Depends(get_current_user),
+                    db_session: Session = Depends(get_db_session)):
+                    """Generates password reset mail and token"""
+                    return reset_password(user, db_session)
+
+
+@router.post("/verify-reset",
+            response_model=PasswordResetResponse,
+            status_code=200)
+def new_password(request: Request)
+            """Verfies password reset token and creates new password"""

@@ -74,7 +74,7 @@ def create_app() -> FastAPI:
 app = create_app()
 
 if __name__ == "__main__":
-    LOG.info("server starting.....", host=settings.host)
+    LOG.info("server starting... on {settings.host}:{settings.port}")
     uvicorn.run(
         "zeno.app:app",
         host=settings.host,

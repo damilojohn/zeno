@@ -1,6 +1,8 @@
 from zeno.api.core.config import Settings
 from zeno.api.core.utils import LOG
+
 from passlib.context import CryptContext
+import secrets, hashlib
 from datetime import datetime, timedelta, timezone
 import jwt
 
@@ -23,6 +25,23 @@ def get_password_hash(password: str):
 
 def verify_password(password: str, hashed_password: str):
     return pwd_context.verify(password, hashed_password)
+
+
+def create_reset_token() -> str:
+    token = secrets.token_urlsafe(64)
+    return token
+
+
+def get_token_hash(token:str)-> str:
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    return token_hash
+
+
+def verify_token_hash(token:str, db_hash: str):
+    try:
+        return hashlib.sha256(token.encode()).hexdigest() == db_hash
+    except Exception as e:
+        LOG.info(f"token verification failed with error {e}")
 
 
 def create_access_token(data: dict):
@@ -88,3 +107,4 @@ def verify_refresh_token(token: str):
     except jwt.PyJWTError as e:
         LOG.info(f"Refresh token validation failed with error :{str(e)}")
         raise ValueError("Invalid refresh token") from e
+

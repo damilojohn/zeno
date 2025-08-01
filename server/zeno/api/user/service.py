@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.exc import SQLAlchemyError
@@ -6,15 +7,19 @@ from zeno.api.core.utils import LOG
 from zeno.api.core.security import (get_password_hash,
                                     create_access_token,
                                     verify_access_token,
+                                    create_reset_token,
                                     verify_refresh_token,
+                                    verify_token_hash,
+                                    get_token_hash,
                                     verify_password,
                                     create_refresh_token)
-from zeno.api.user.schemas import (UserCreate,
+from zeno.api.user.schemas import (UserBase, UserCreate,
                                    RegisterResponse,
                                    TokenResponse,
+                                   ResetTokenResponse,
                                    LoginRequest)
 
-from zeno.api.models.users import User
+from zeno.api.models.users import User, ResetTokens
 from zeno.api.core.db import Session, get_db_session
 from zeno.api.core.config import Settings
 
@@ -140,6 +145,70 @@ def get_refresh_token(token: str = Depends(oauth2scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token credentials"
         ) from e
+
+
+def send_reset_mail(token: str):
+    """Generates password reset mail """
+    mail_str = f"""
+    
+    """
+
+
+def reset_password(user: User, db_session: Session):
+    # verify user exists with mail // username
+    try:
+
+        db_user = db_session.query(User).filter(
+            User.email == user.email
+        ).first()
+
+        if not db_user:
+            return ResetTokenResponse(
+                    msg="Password Reset mail sent successfully!! (user doesn't exist)"
+            )
+
+        else:
+            # generate token
+            token = create_reset_token()
+            hashed_token = get_token_hash(token)
+            db_token = ResetTokens(
+                    token_hash = hashed_token,
+                    user_id = db_user.id
+                    to_expire = datetime.now(timezone.utc) + timedelta(minutes=settings.reset_tok_exp)
+                    )
+            db_session.add(db_token)
+
+            # generate mail
+            send_reset_mail(token)
+
+            return ResetTokenResponse(
+                    msg="Password Reset mail sent successfully!!"
+            )
+        
+
+    except Exception as e:
+        LOG.info(f"password reset failed with {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"password reset failed with error {e}"
+        )
+
+
+
+
+def create_new_password(new_password,
+                        user: User,
+                        token,
+                        db_session: Session = Depends(get_db_session)):
+    # verify token hash
+    db_token = db_session.query(ResetTokens).filter(
+        ResetTokens.
+    )
+
+
+    # hash new password 
+
+    # store new password in db
 
 
 # async def handle_google_oauth(
