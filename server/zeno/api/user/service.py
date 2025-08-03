@@ -2,6 +2,7 @@ from datetime import datetime, timezone, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.status import HTTP_400_BAD_REQUEST
 
 from zeno.api.core.utils import LOG
 from zeno.api.core.security import (get_password_hash,
@@ -30,9 +31,12 @@ oauth2scheme = OAuth2PasswordBearer(tokenUrl="/v2/auth/form-login")
 
 async def get_current_user(token: str = Depends(oauth2scheme),
                            session: Session = Depends(get_db_session)) -> User:
+    """Get current db user from JWT"""
     try:
+        LOG.info("Getting User from JWT")
         username = verify_access_token(token)
     except Exception as e:
+        LOG.info(f"failed with error {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token"
@@ -149,9 +153,7 @@ def get_refresh_token(token: str = Depends(oauth2scheme)):
 
 def send_reset_mail(token: str):
     """Generates password reset mail """
-    mail_str = f"""
-    
-    """
+    LOG.info(f"Fake send mail with token {token}")
 
 
 def reset_password(user: User, db_session: Session):
@@ -173,7 +175,7 @@ def reset_password(user: User, db_session: Session):
             hashed_token = get_token_hash(token)
             db_token = ResetTokens(
                     token_hash = hashed_token,
-                    user_id = db_user.id
+                    user_id = db_user.id,
                     to_expire = datetime.now(timezone.utc) + timedelta(minutes=settings.reset_tok_exp)
                     )
             db_session.add(db_token)
@@ -194,16 +196,62 @@ def reset_password(user: User, db_session: Session):
         )
 
 
-
-
 def create_new_password(new_password,
                         user: User,
-                        token,
-                        db_session: Session = Depends(get_db_session)):
-    # verify token hash
-    db_token = db_session.query(ResetTokens).filter(
-        ResetTokens.
-    )
+                        token: str,
+                        db_session: Session):
+    try:
+        # verify token hash
+        db_token = db_session.query(ResetTokens).filter(
+            ResetTokens.user_id==user.id).order_by(ResetTokens.to_expire.desc()).first()
+        if db_token:
+            LOG.info("Retrieved reset_token...")
+            if verify_token_hash(token, db_token.token_hash):
+                LOG.info("Verified reset token")
+                to_expire = db_token.to_expire
+                curr_time = datetime.now(timezone.utc)
+                LOG.info(f"current time: {str(curr_time)}")
+                if curr_time > to_expire:
+                    LOG.info("Reset token expired..")
+                    raise HTTPException(
+                        status_code=HTTP_400_BAD_REQUEST,
+                        detail=" Reset Token expired"
+                    )
+                else:
+                    # write new password to db
+                    new_password_hsh = get_password_hash(new_password)
+                    try:
+
+                        db_user = db_session.query(User).filter_by(id=user.id).first()
+                        if db_user:
+                            db_user.hashed_password = new_password_hsh
+                            db_session.commit()
+                            return "Password changed successfully..."
+                    except SQLAlchemyError as e:
+                        LOG.info(f"DB write failed... with error {e}")
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Failed to write to db with error {e}"
+                        )
+            else:
+                LOG.info("DB Hash and token hash not equal")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="failed to verify reset token"
+                )
+        else:
+            LOG.info("failed to get db token")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="invalid reset token"
+            )              
+    except Exception as e:
+        LOG.info(f"failed to create new password with error {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"failed to create new password with error {e}"
+        )
+
 
 
     # hash new password 

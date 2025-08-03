@@ -28,7 +28,7 @@ class TimeStampedModel(Model):
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
         nullable=True,
-        default=None,
+        default=current_time,
         index=True
         )
 

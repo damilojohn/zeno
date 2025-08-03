@@ -59,8 +59,11 @@ class OAuthResponse(BaseModel):
 
 
 class PasswordResetRequest(BaseModel):
-    mail: EmailStr
+    reset_token:str
+    new_password: str
 
+class PasswordResetResponse(BaseModel):
+    msg: str
 
 class ResetTokenResponse(BaseModel):
     msg:str

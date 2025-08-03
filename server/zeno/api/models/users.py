@@ -51,8 +51,8 @@ class ResetTokens(RecordModel):
     __tablename__ = "PasswordResetTokens"
     user_id: Mapped[UUID] = mapped_column(
                                         ForeignKey("users.id",
-                                        ondelete="CASCADE",
-                                        nullable=False)
+                                        ondelete="CASCADE"),
+                                        nullable=False
     )
     token_hash: Mapped[str] = mapped_column(String(64))
     to_expire: Mapped[datetime] = mapped_column(TIMESTAMP(
@@ -60,3 +60,4 @@ class ResetTokens(RecordModel):
             nullable=False,
             default=current_time,
     )
+    users = relationship("User", back_populates="reset_tokens")

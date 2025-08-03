@@ -1,6 +1,7 @@
 from zeno.api.core.config import Settings
 from zeno.api.core.utils import LOG
 
+from fastapi import HTTPException, status
 from passlib.context import CryptContext
 import secrets, hashlib
 from datetime import datetime, timedelta, timezone
@@ -39,7 +40,9 @@ def get_token_hash(token:str)-> str:
 
 def verify_token_hash(token:str, db_hash: str):
     try:
-        return hashlib.sha256(token.encode()).hexdigest() == db_hash
+        token_hash = get_token_hash(token)
+        LOG.info(f"token hash {token_hash} db_hash {db_hash}")
+        return token_hash == db_hash
     except Exception as e:
         LOG.info(f"token verification failed with error {e}")
 
@@ -76,6 +79,7 @@ def create_refresh_token(data: dict):
 
 
 def verify_access_token(token: str):
+    """get user from jwt data"""
     try:
         payload = jwt.decode(
             token,
@@ -84,11 +88,17 @@ def verify_access_token(token: str):
         )
         return payload['username']
     except jwt.ExpiredSignatureError as e:
-        LOG.info(f"Access token validation failed with error :{str(e)}")
-        raise ValueError("Access token has expired") from e
+        LOG.info(f"Access token  has expired:{str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Access token has expired",
+        ) from e
     except jwt.PyJWTError as e:
         LOG.info(f"Access token validation failed with error :{str(e)}")
-        raise ValueError("Invalid access token") from e
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Access token has expired",
+        ) from e
 
 
 def verify_refresh_token(token: str):
@@ -103,8 +113,12 @@ def verify_refresh_token(token: str):
         return payload["username"]
     except jwt.ExpiredSignatureError as e:
         LOG.info(f"refresh token validation failed with error :{str(e)}")
-        raise ValueError("Refresh token has expired") from e
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has expired") from e
     except jwt.PyJWTError as e:
         LOG.info(f"Refresh token validation failed with error :{str(e)}")
-        raise ValueError("Invalid refresh token") from e
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token") from e
 

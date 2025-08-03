@@ -11,6 +11,7 @@ from zeno.api.user.schemas import (
     RefreshRequest,
     TokenResponse,
     PasswordResetRequest,
+    PasswordResetResponse,
     ResetTokenResponse
 )
 
@@ -21,7 +22,8 @@ from zeno.api.user.service import (
     add_new_user,
     authenticate_user,
     get_refresh_token,
-    reset_password
+    reset_password,
+    create_new_password
 )
 
 router = APIRouter(prefix="/v2/auth", tags=["users"])
@@ -76,8 +78,7 @@ async def login(
 
     Args:
 
-    login_data: LoginRequest object
-    session: sqlalchemy session
+    login_data: LoginRequest
 
     Returns:
     TokenResponse : access_token and refresh_token
@@ -116,15 +117,27 @@ def refresh_token(
             response_model=ResetTokenResponse,
             status_code=200)
 def forgot_password(
-                    request: PasswordResetRequest,
                     user: User = Depends(get_current_user),
                     db_session: Session = Depends(get_db_session)):
                     """Generates password reset mail and token"""
                     return reset_password(user, db_session)
 
 
-@router.post("/verify-reset",
+@router.post("/password-reset",
             response_model=PasswordResetResponse,
             status_code=200)
-def new_password(request: Request)
-            """Verfies password reset token and creates new password"""
+def new_password(request: PasswordResetRequest,
+                user = Depends(get_current_user),
+                db_session = Depends(get_db_session)):
+                """Verifies password reset token and creates new password"""
+                msg = create_new_password(request.new_password,user, request.reset_token, db_session)
+                if msg:
+                       
+                    return PasswordResetResponse(
+                        msg=str(msg)
+                    )
+                else:
+                       return PasswordResetResponse(
+                              msg = "failed to reset password"
+                       )
+
