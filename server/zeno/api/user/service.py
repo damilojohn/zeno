@@ -2,7 +2,9 @@ from datetime import datetime, timezone, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.exc import SQLAlchemyError
-from starlette.status import HTTP_400_BAD_REQUEST
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 
 from zeno.api.core.utils import LOG
 from zeno.api.core.security import (get_password_hash,
@@ -21,7 +23,7 @@ from zeno.api.user.schemas import (UserBase, UserCreate,
                                    LoginRequest)
 
 from zeno.api.models.users import User, ResetTokens
-from zeno.api.core.db import Session, get_db_session
+from zeno.api.core.db import get_db_session
 from zeno.api.core.config import Settings
 
 settings = Settings()
@@ -30,7 +32,7 @@ oauth2scheme = OAuth2PasswordBearer(tokenUrl="/v2/auth/form-login")
 
 
 async def get_current_user(token: str = Depends(oauth2scheme),
-                           session: Session = Depends(get_db_session)) -> User:
+                           session: AsyncSession = Depends(get_db_session)) -> User:
     """Get current db user from JWT"""
     try:
         LOG.info("Getting User from JWT")
@@ -41,9 +43,10 @@ async def get_current_user(token: str = Depends(oauth2scheme),
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token"
         ) from e
-    user = session.query(User).filter(
-        User.username == username
-    ).first()
+    
+    result = await session.execute(select(User).filter(User.username == username))
+    user = result.scalar_one_or_none()
+    
     if user:
         return user
     else:
@@ -55,13 +58,12 @@ async def get_current_user(token: str = Depends(oauth2scheme),
 
 async def add_new_user(
     new_user: UserCreate,
-    session: Session = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session)
 ):
     try:
         # Check if user exists
-        existing_user = session.query(User).filter(
-                User.username == new_user.username
-        ).first()
+        result = await session.execute(select(User).filter(User.username == new_user.username))
+        existing_user = result.scalar_one_or_none()
 
         if existing_user:
             LOG.info(
@@ -81,8 +83,8 @@ async def add_new_user(
         )
         # Add and commit in a transaction
         session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+        await session.commit()
+        await session.refresh(db_user)
 
         # Generate tokens
         try:
@@ -101,68 +103,90 @@ async def add_new_user(
             message="User created Successfully"
         )
 
-    except SQLAlchemyError as e:
-        session.rollback()
-        LOG.error("Database error during user creation", error=str(e))
+    except HTTPException:
+        raise
+    except Exception as e:
+        LOG.info(f"failed to create user with error {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error creating user"
-        ) from e
+            detail=f"failed to create user with error {e}"
+        )
 
 
 async def authenticate_user(user: LoginRequest,
-                            session: Session = Depends(get_db_session)):
-    db_user = session.query(User).filter(
-        User.username == user.username
-    ).first()
-    if db_user:
+                            session: AsyncSession = Depends(get_db_session)):
+    try:
+        result = await session.execute(select(User).filter(User.username == user.username))
+        db_user = result.scalar_one_or_none()
+
+        if not db_user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid username or password"
+            )
+
         if not verify_password(user.password, db_user.hashed_password):
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Incorrect username or password"
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid username or password"
             )
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User does not exist"
+
+        access_token = create_access_token({"username": str(db_user.username)})
+        refresh_token = create_refresh_token({"username": str(db_user.username)})
+
+        return TokenResponse(
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer"
         )
-    return TokenResponse(
-        access_token=create_access_token(data={"username": str(db_user.username)}),
-        refresh_token=create_refresh_token(data={"username":str(db_user.username)}),
-        token_type="bearer"
-    )
 
-
-def get_refresh_token(token: str = Depends(oauth2scheme)):
-    try:
-        payload = verify_refresh_token(token)
-        if payload:
-            return TokenResponse(
-                access_token = create_access_token({"username": payload}),
-                refresh_token = "",
-                token_type="bearer"
-            )
+    except HTTPException:
+        raise
     except Exception as e:
-        LOG.info("Refresh token verification failed...",
-                 error=str(e))
+        LOG.info(f"failed with error {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token credentials"
         ) from e
 
 
-def send_reset_mail(token: str):
+def get_refresh_token(token: str = Depends(oauth2scheme)):
+    try:
+        username = verify_refresh_token(token)
+        access_token = create_access_token({"username": username})
+        refresh_token = create_refresh_token({"username": username})
+
+        return TokenResponse(
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer"
+        )
+    except Exception as e:
+        LOG.info(f"failed with error {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token credentials"
+        ) from e
+
+
+async def send_reset_mail(token: str, email: str, username: str):
     """Generates password reset mail """
-    LOG.info(f"Fake send mail with token {token}")
+    from zeno.api.core.email import send_password_reset_email
+    
+    # Try to send email, fallback to logging if it fails
+    email_sent = await send_password_reset_email(email, token, username)
+    if not email_sent:
+        LOG.info(f"Failed to send email, logging token instead: {token}")
+    else:
+        LOG.info(f"Password reset email sent successfully to {email}")
 
 
-def reset_password(user: User, db_session: Session):
+async def reset_password(email: str, db_session: AsyncSession):
     # verify user exists with mail // username
     try:
-
-        db_user = db_session.query(User).filter(
-            User.email == user.email
-        ).first()
+        LOG.info("Fetching user ....")
+        result = await db_session.execute(select(User).filter(User.email == email))
+        db_user = result.scalar_one_or_none()
 
         if not db_user:
             return ResetTokenResponse(
@@ -179,31 +203,46 @@ def reset_password(user: User, db_session: Session):
                     to_expire = datetime.now(timezone.utc) + timedelta(minutes=settings.reset_tok_exp)
                     )
             db_session.add(db_token)
+            await db_session.commit()
 
             # generate mail
-            send_reset_mail(token)
-
-            return ResetTokenResponse(
-                    msg="Password Reset mail sent successfully!!"
-            )
-        
-
+            # await send_reset_mail(token, db_user.email, db_user.username)
     except Exception as e:
         LOG.info(f"password reset failed with {e}")
         raise HTTPException(
             status_code=500,
             detail=f"password reset failed with error {e}"
         )
+    try:
+        LOG.info("sending email to user....")
+        await send_reset_mail(token, db_user.email, db_user.username)
+    except Exception as e:
+        LOG.info(f"failed to send email to user with error {e}...")
+        raise HTTPException(
+            detail="failed to send user mail",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
-def create_new_password(new_password,
+    return ResetTokenResponse(
+            msg="Password Reset mail sent successfully!!"
+    )
+    
+
+
+async def create_new_password(new_password,
                         user: User,
                         token: str,
-                        db_session: Session):
+                        db_session: AsyncSession):
     try:
         # verify token hash
-        db_token = db_session.query(ResetTokens).filter(
-            ResetTokens.user_id==user.id).order_by(ResetTokens.to_expire.desc()).first()
+        result = await db_session.execute(
+            select(ResetTokens)
+            .filter(ResetTokens.user_id == user.id)
+            .order_by(ResetTokens.to_expire.desc())
+        )
+        db_token = result.scalar_one_or_none()
+        
         if db_token:
             LOG.info("Retrieved reset_token...")
             if verify_token_hash(token, db_token.token_hash):
@@ -222,10 +261,23 @@ def create_new_password(new_password,
                     new_password_hsh = get_password_hash(new_password)
                     try:
 
-                        db_user = db_session.query(User).filter_by(id=user.id).first()
+                        result = await db_session.execute(select(User).filter_by(id=user.id))
+                        db_user = result.scalar_one_or_none()
                         if db_user:
                             db_user.hashed_password = new_password_hsh
-                            db_session.commit()
+                            
+                            # Delete all reset tokens for this user
+                            await db_session.execute(
+                                select(ResetTokens).filter(ResetTokens.user_id == user.id)
+                            )
+                            delete_result = await db_session.execute(
+                                select(ResetTokens).filter(ResetTokens.user_id == user.id)
+                            )
+                            tokens_to_delete = delete_result.scalars().all()
+                            for token_to_delete in tokens_to_delete:
+                                await db_session.delete(token_to_delete)
+                            
+                            await db_session.commit()
                             return "Password changed successfully..."
                     except SQLAlchemyError as e:
                         LOG.info(f"DB write failed... with error {e}")
@@ -253,16 +305,10 @@ def create_new_password(new_password,
         )
 
 
-
-    # hash new password 
-
-    # store new password in db
-
-
 # async def handle_google_oauth(
 #     code: str,
 #     redirect_uri: str,
-#     session: Session = Depends(get_db_session)
+#     session: AsyncSession = Depends(get_db_session)
 # ):
 #     try:
 #         # Verify the Google OAuth token
@@ -279,7 +325,8 @@ def create_new_password(new_password,
 #         name = idinfo.get('name', '')
 
 #         # Check if user exists
-#         user = session.query(User).filter(User.email == email).first()
+#         result = await session.execute(select(User).filter(User.email == email))
+#         user = result.scalar_one_or_none()
 #         is_new_user = False
 
 #         if not user:
@@ -291,8 +338,8 @@ def create_new_password(new_password,
 #                 is_verified=True  # Google emails are pre-verified
 #             )
 #             session.add(user)
-#             session.commit()
-#             session.refresh(user)
+#             await session.commit()
+#             await session.refresh(user)
 #             is_new_user = True
 
 #         # Generate tokens
@@ -307,7 +354,7 @@ def create_new_password(new_password,
 #         }
 
 #     except SQLAlchemyError as e:
-#         session.rollback()
+#         await session.rollback()
 #         LOG.error("Database error during user creation", error=str(e))
 #         raise HTTPException(
 #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

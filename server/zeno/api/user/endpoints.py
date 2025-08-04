@@ -1,7 +1,8 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.background import P
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from zeno.api.user.schemas import (
     UserCreate,
@@ -10,13 +11,14 @@ from zeno.api.user.schemas import (
     RegisterResponse,
     RefreshRequest,
     TokenResponse,
+    ForgotPasswordRequest,
     PasswordResetRequest,
     PasswordResetResponse,
     ResetTokenResponse
 )
 
 from zeno.api.models.users import User
-from zeno.api.core.db import get_db_session, Session
+from zeno.api.core.db import get_db_session, get_async_db_session
 from zeno.api.user.service import (
     get_current_user,
     add_new_user,
@@ -25,6 +27,7 @@ from zeno.api.user.service import (
     reset_password,
     create_new_password
 )
+from zeno.api.core.email import send_test_email
 
 router = APIRouter(prefix="/v2/auth", tags=["users"])
 
@@ -47,7 +50,7 @@ async def get_user_profile(
 )
 async def register_user(
     user: UserCreate,
-    session: Session = Depends(get_db_session)
+    session: AsyncSession = Depends(get_async_db_session)
 ):
     """
     Register a new user with email and password.
@@ -71,7 +74,7 @@ async def register_user(
              status_code=200)
 async def login(
     login_data: LoginRequest,
-    session: Session = Depends(get_db_session)
+    session: AsyncSession = Depends(get_async_db_session)
 ):
     """
     Login with email and password.
@@ -91,7 +94,7 @@ async def login(
              response_model=TokenResponse,
              status_code=200)
 async def form_login(data: Annotated[OAuth2PasswordRequestForm, Depends()],
-                     session = Depends(get_db_session)):
+                     session: AsyncSession = Depends(get_async_db_session)):
     """ """
     user = LoginRequest(username=data.username,
                         password=data.password)
@@ -116,21 +119,21 @@ def refresh_token(
 @router.post("/forgot-password",
             response_model=ResetTokenResponse,
             status_code=200)
-def forgot_password(
-                    user: User = Depends(get_current_user),
-                    db_session: Session = Depends(get_db_session)):
+async def forgot_password(
+                    request: ForgotPasswordRequest,
+                    db_session: AsyncSession = Depends(get_async_db_session)):
                     """Generates password reset mail and token"""
-                    return reset_password(user, db_session)
+                    return await reset_password(request.email, db_session)
 
 
 @router.post("/password-reset",
             response_model=PasswordResetResponse,
             status_code=200)
-def new_password(request: PasswordResetRequest,
+async def new_password(request: PasswordResetRequest,
                 user = Depends(get_current_user),
-                db_session = Depends(get_db_session)):
+                db_session: AsyncSession = Depends(get_async_db_session)):
                 """Verifies password reset token and creates new password"""
-                msg = create_new_password(request.new_password,user, request.reset_token, db_session)
+                msg = await create_new_password(request.new_password,user, request.reset_token, db_session)
                 if msg:
                        
                     return PasswordResetResponse(
@@ -140,4 +143,18 @@ def new_password(request: PasswordResetRequest,
                        return PasswordResetResponse(
                               msg = "failed to reset password"
                        )
+
+
+@router.post("/test-email",
+            status_code=200)
+async def test_email(email: str):
+    """Test email functionality"""
+    success = await send_test_email(email)
+    if success:
+        return {"message": f"Test email sent successfully to {email}"}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to send test email to {email}"
+        )
 

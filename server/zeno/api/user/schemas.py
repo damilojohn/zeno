@@ -57,6 +57,8 @@ class OAuthResponse(BaseModel):
     refresh_token: str
     is_new_user: bool
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
 
 class PasswordResetRequest(BaseModel):
     reset_token:str

@@ -7,10 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from zeno.api.core.db import (_create_engine,
+                             _create_async_engine,
                               create_session,
-                              Engine,
-                              SessionMaker,
-                              init_db
+                              create_async_session,
+                              AsyncEngine,
+                              AsyncSessionMaker,
+                              init_db,
+                              init_db_async
                               )
 from zeno.api.core.utils import LOG
 from zeno.api.core.config import Settings
@@ -21,8 +24,8 @@ from zeno.api.user.endpoints import router as user_router
 settings = Settings()
 
 class State(TypedDict):
-    engine: Engine
-    session: SessionMaker
+    engine: AsyncEngine
+    async_session_maker: AsyncSessionMaker
 
 
 def configure_cors(app: FastAPI, settings: Settings) -> None:
@@ -40,9 +43,9 @@ async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
     LOG.info("Zeno API starting.....")
 
     # set up app state and load global settings
-    engine = _create_engine(settings.database_url)
-    init_db(engine, settings)
-    session_maker = create_session(engine)
+    engine = _create_async_engine(settings.database_url)
+    await init_db_async(engine, settings)
+    session_maker = create_async_session(engine)
     app.state.session_maker = session_maker
 
     try:
@@ -53,7 +56,7 @@ async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
             "session_maker": session_maker
             }
     finally:
-        engine.dispose()
+        await engine.dispose()
 
     LOG.info("Zeno API shutting down.........")
 
