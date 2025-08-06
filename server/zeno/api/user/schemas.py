@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr, StringConstraints
 
 class UserBase(BaseModel):
     username: str
-    email: str | None = None
+    email: EmailStr | None
     is_verified: bool = False
 
 

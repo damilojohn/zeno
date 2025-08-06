@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 
 from zeno.api.core.utils import LOG
@@ -36,7 +36,7 @@ async def get_current_user(token: str = Depends(oauth2scheme),
     """Get current db user from JWT"""
     try:
         LOG.info("Getting User from JWT")
-        username = verify_access_token(token)
+        user_id = verify_access_token(token)
     except Exception as e:
         LOG.info(f"failed with error {e}")
         raise HTTPException(
@@ -44,7 +44,7 @@ async def get_current_user(token: str = Depends(oauth2scheme),
             detail="Invalid token"
         ) from e
     
-    result = await session.execute(select(User).filter(User.username == username))
+    result = await session.execute(select(User).filter(User.id == user_id))
     user = result.scalar_one_or_none()
     
     if user:
@@ -62,7 +62,9 @@ async def add_new_user(
 ):
     try:
         # Check if user exists
-        result = await session.execute(select(User).filter(User.username == new_user.username))
+        result = await session.execute(select(User).filter(
+            or_(User.username == new_user.username,
+            User.email == new_user.email)))
         existing_user = result.scalar_one_or_none()
 
         if existing_user:
@@ -89,8 +91,8 @@ async def add_new_user(
         # Generate tokens
         try:
 
-            access_token = create_access_token({"username": str(db_user.username)})
-            refresh_token = create_refresh_token({"username": str(db_user.username)})
+            access_token = create_access_token({"user_id": str(db_user.id)})
+            refresh_token = create_refresh_token({"token_type": "refresh"})
         except Exception as e:
             LOG.info(f"failed with error {e}")
             raise e
@@ -116,7 +118,9 @@ async def add_new_user(
 async def authenticate_user(user: LoginRequest,
                             session: AsyncSession = Depends(get_db_session)):
     try:
-        result = await session.execute(select(User).filter(User.username == user.username))
+        result = await session.execute(select(User).filter(
+            or_(User.username == user.username,
+            User.email == user.email)))
         db_user = result.scalar_one_or_none()
 
         if not db_user:

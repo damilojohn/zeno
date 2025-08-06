@@ -86,7 +86,7 @@ def verify_access_token(token: str):
             settings.jwt_secret_key,
             algorithms=settings.jwt_algorithm
         )
-        return payload['username']
+        return payload['user_id']
     except jwt.ExpiredSignatureError as e:
         LOG.info(f"Access token  has expired:{str(e)}")
         raise HTTPException(

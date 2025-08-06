@@ -34,7 +34,7 @@ class User(RecordModel):
         Boolean,
         default=False
     )
-    username: Mapped[str] = mapped_column(String(128))
+    username: Mapped[str] = mapped_column(String(128), unique=True)
     # password nullable for oauth users
 
     hashed_password: Mapped[str] = mapped_column(String(256),
