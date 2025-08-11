@@ -1,9 +1,8 @@
 from typing import Annotated
-from pydantic import BaseModel, EmailStr, StringConstraints
+from pydantic import UUID4, BaseModel, EmailStr, StringConstraints
 
 
 class UserBase(BaseModel):
-    username: str
     email: EmailStr | None
     is_verified: bool = False
 
@@ -11,18 +10,18 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: Annotated[str, StringConstraints(
         strip_whitespace=True, max_length=64)]
-    username: Annotated[str, StringConstraints(
-        strip_whitespace=True, max_length=64)]
+    # username: Annotated[str, StringConstraints(
+    #     strip_whitespace=True, max_length=64)]
 
 
 class UserResponse(UserBase):
-    username: str
+    id: UUID4
     is_verified: bool = False
     auth_provider: str = "local"  # local, google, apple
 
 
 class RegisterResponse(BaseModel):
-    username: str
+    email: EmailStr
     is_verified: bool = False
     access_token: str
     refresh_token: str
@@ -41,8 +40,7 @@ class RefreshRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    username: str
-    email: str | None = None
+    email: EmailStr | None = None
     password: str
 
 

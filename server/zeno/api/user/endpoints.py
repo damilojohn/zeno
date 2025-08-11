@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zeno.api.user.schemas import (
+    UserResponse,
     UserCreate,
     UserResponse,
     LoginRequest,
@@ -35,7 +36,7 @@ router = APIRouter(prefix="/v2/auth", tags=["users"])
 
 @router.get("/me", response_model=UserResponse)
 async def get_user_profile(
-    user: User = Depends(get_current_user)
+    user: UserResponse = Depends(get_current_user)
 ):
     """
     Get the current user's profile.
@@ -96,7 +97,7 @@ async def login(
 async def form_login(data: Annotated[OAuth2PasswordRequestForm, Depends()],
                      session: AsyncSession = Depends(get_async_db_session)):
     """ """
-    user = LoginRequest(username=data.username,
+    user = LoginRequest(email=data.username,
                         password=data.password)
     return await authenticate_user(user, session)
 
@@ -130,12 +131,10 @@ async def forgot_password(
             response_model=PasswordResetResponse,
             status_code=200)
 async def new_password(request: PasswordResetRequest,
-                user = Depends(get_current_user),
                 db_session: AsyncSession = Depends(get_async_db_session)):
                 """Verifies password reset token and creates new password"""
-                msg = await create_new_password(request.new_password,user, request.reset_token, db_session)
-                if msg:
-                       
+                msg = await create_new_password(request.new_password, request.reset_token, db_session)
+                if msg: 
                     return PasswordResetResponse(
                         msg=str(msg)
                     )

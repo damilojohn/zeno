@@ -1,6 +1,8 @@
+from pathlib import Path
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
+print(Path(__file__).parent / ".env")
 
 class Settings(BaseSettings):
     env: str = Field(...,
@@ -60,7 +62,8 @@ class Settings(BaseSettings):
                               alias="FRONTEND_URL")
 
     class Config:
-        env_file = ".env"
+        env_file = Path(__file__).parent / ".env"
+    
         env_file_encoding = "utf-8"
 
     @property

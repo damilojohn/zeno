@@ -27,14 +27,14 @@ class User(RecordModel):
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(320),
-                                       nullable=True,
+                                       nullable=False,
                                        index=True,
                                        unique=True)
     email_verified: Mapped[bool] = mapped_column(
         Boolean,
         default=False
     )
-    username: Mapped[str] = mapped_column(String(128), unique=True)
+    full_name: Mapped[str] = mapped_column(String(128), unique=True, nullable=True)
     # password nullable for oauth users
 
     hashed_password: Mapped[str] = mapped_column(String(256),

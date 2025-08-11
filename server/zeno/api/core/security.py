@@ -49,9 +49,11 @@ def verify_token_hash(token:str, db_hash: str):
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(
-        minutes=settings.jwt_expiration)
-    to_encode.update({"exp": expire})
+    iat = datetime.now(timezone.utc)
+    expire = iat + timedelta(
+        days=settings.jwt_refresh_exp)
+    to_encode.update({"exp": expire,
+                    "iat":iat})
     token = jwt.encode(
         to_encode,
         settings.jwt_secret_key,
@@ -63,10 +65,12 @@ def create_access_token(data: dict):
 def create_refresh_token(data: dict):
     to_encode = data.copy()
     # Refresh tokens typically last longer, e.g., 7 days
-    expire = datetime.now(timezone.utc) + timedelta(
+    iat = datetime.now(timezone.utc)
+    expire = iat + timedelta(
         days=settings.jwt_refresh_exp)
     to_encode.update({
         "exp": expire,
+        "iat": iat,
         "token_type": "refresh"  # Adding token type for additional security
     })
     token = jwt.encode(
@@ -86,7 +90,7 @@ def verify_access_token(token: str):
             settings.jwt_secret_key,
             algorithms=settings.jwt_algorithm
         )
-        return payload['user_id']
+        return payload['sub']
     except jwt.ExpiredSignatureError as e:
         LOG.info(f"Access token  has expired:{str(e)}")
         raise HTTPException(
@@ -110,7 +114,7 @@ def verify_refresh_token(token: str):
         )
         if payload.get("token_type") != "refresh":
             raise ValueError("Invalid token type")
-        return payload["username"]
+        return payload["sub"]
     except jwt.ExpiredSignatureError as e:
         LOG.info(f"refresh token validation failed with error :{str(e)}")
         raise HTTPException(

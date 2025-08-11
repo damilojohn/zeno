@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from pydantic import EmailStr
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
@@ -16,7 +17,7 @@ from zeno.api.core.security import (get_password_hash,
                                     get_token_hash,
                                     verify_password,
                                     create_refresh_token)
-from zeno.api.user.schemas import (UserBase, UserCreate,
+from zeno.api.user.schemas import (UserResponse, UserCreate,
                                    RegisterResponse,
                                    TokenResponse,
                                    ResetTokenResponse,
@@ -32,7 +33,7 @@ oauth2scheme = OAuth2PasswordBearer(tokenUrl="/v2/auth/form-login")
 
 
 async def get_current_user(token: str = Depends(oauth2scheme),
-                           session: AsyncSession = Depends(get_db_session)) -> User:
+                           session: AsyncSession = Depends(get_db_session)) -> UserResponse:
     """Get current db user from JWT"""
     try:
         LOG.info("Getting User from JWT")
@@ -46,9 +47,11 @@ async def get_current_user(token: str = Depends(oauth2scheme),
     
     result = await session.execute(select(User).filter(User.id == user_id))
     user = result.scalar_one_or_none()
-    
     if user:
-        return user
+        user_resp = UserResponse(email=user.email,
+                                is_verified = user.email_verified,
+                                id = user.id)
+        return user_resp
     else:
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
@@ -63,8 +66,7 @@ async def add_new_user(
     try:
         # Check if user exists
         result = await session.execute(select(User).filter(
-            or_(User.username == new_user.username,
-            User.email == new_user.email)))
+            User.email == new_user.email))
         existing_user = result.scalar_one_or_none()
 
         if existing_user:
@@ -80,7 +82,6 @@ async def add_new_user(
         hashed_pwd = get_password_hash(new_user.password)
         db_user = User(
             email=new_user.email,
-            username=new_user.username,
             hashed_password=hashed_pwd,
         )
         # Add and commit in a transaction
@@ -91,14 +92,14 @@ async def add_new_user(
         # Generate tokens
         try:
 
-            access_token = create_access_token({"user_id": str(db_user.id)})
-            refresh_token = create_refresh_token({"token_type": "refresh"})
+            access_token = create_access_token({"sub": str(db_user.id)})
+            refresh_token = create_refresh_token({"": ""})
         except Exception as e:
             LOG.info(f"failed with error {e}")
             raise e
         
         return RegisterResponse(
-            username=new_user.username,
+            email=new_user.email,
             is_verified=False,
             access_token=access_token,
             refresh_token=refresh_token,
@@ -119,8 +120,7 @@ async def authenticate_user(user: LoginRequest,
                             session: AsyncSession = Depends(get_db_session)):
     try:
         result = await session.execute(select(User).filter(
-            or_(User.username == user.username,
-            User.email == user.email)))
+            User.email == user.email))
         db_user = result.scalar_one_or_none()
 
         if not db_user:
@@ -135,8 +135,8 @@ async def authenticate_user(user: LoginRequest,
                 detail="Invalid username or password"
             )
 
-        access_token = create_access_token({"username": str(db_user.username)})
-        refresh_token = create_refresh_token({"username": str(db_user.username)})
+        access_token = create_access_token({"sub": str(db_user.id)})
+        refresh_token = create_refresh_token({"sub": str(db_user.id)})
 
         return TokenResponse(
             access_token=access_token,
@@ -156,9 +156,9 @@ async def authenticate_user(user: LoginRequest,
 
 def get_refresh_token(token: str = Depends(oauth2scheme)):
     try:
-        username = verify_refresh_token(token)
-        access_token = create_access_token({"username": username})
-        refresh_token = create_refresh_token({"username": username})
+        id = verify_refresh_token(token)
+        access_token = create_access_token({"sub": id})
+        refresh_token = create_refresh_token({"sub": id})
 
         return TokenResponse(
             access_token=access_token,
@@ -200,6 +200,7 @@ async def reset_password(email: str, db_session: AsyncSession):
         else:
             # generate token
             token = create_reset_token()
+            LOG.info(f"displaying token in logs for tests token : {token}")
             hashed_token = get_token_hash(token)
             db_token = ResetTokens(
                     token_hash = hashed_token,
@@ -219,7 +220,7 @@ async def reset_password(email: str, db_session: AsyncSession):
         )
     try:
         LOG.info("sending email to user....")
-        await send_reset_mail(token, db_user.email, db_user.username)
+        # await send_reset_mail(token, db_user.email, db_user.username)
     except Exception as e:
         LOG.info(f"failed to send email to user with error {e}...")
         raise HTTPException(
@@ -235,72 +236,62 @@ async def reset_password(email: str, db_session: AsyncSession):
 
 
 async def create_new_password(new_password,
-                        user: User,
                         token: str,
                         db_session: AsyncSession):
     try:
-        # verify token hash
+        # get token hash
+        token_hash = get_token_hash(token)
         result = await db_session.execute(
             select(ResetTokens)
-            .filter(ResetTokens.user_id == user.id)
+            .filter(ResetTokens.token_hash == token_hash)
             .order_by(ResetTokens.to_expire.desc())
         )
-        db_token = result.scalar_one_or_none()
-        
-        if db_token:
-            LOG.info("Retrieved reset_token...")
-            if verify_token_hash(token, db_token.token_hash):
-                LOG.info("Verified reset token")
-                to_expire = db_token.to_expire
-                curr_time = datetime.now(timezone.utc)
-                LOG.info(f"current time: {str(curr_time)}")
-                if curr_time > to_expire:
-                    LOG.info("Reset token expired..")
-                    raise HTTPException(
-                        status_code=HTTP_400_BAD_REQUEST,
-                        detail=" Reset Token expired"
-                    )
-                else:
-                    # write new password to db
-                    new_password_hsh = get_password_hash(new_password)
-                    try:
+        db_result = result.scalar_one_or_none()
 
-                        result = await db_session.execute(select(User).filter_by(id=user.id))
-                        db_user = result.scalar_one_or_none()
-                        if db_user:
-                            db_user.hashed_password = new_password_hsh
-                            
+        
+        if db_result:
+            LOG.info("verified reset_token...")
+            to_expire = db_result.to_expire
+            curr_time = datetime.now(timezone.utc)
+            LOG.info(f"current time: {str(curr_time)}")
+            if curr_time > to_expire:
+                LOG.info("Reset token expired..")
+                raise HTTPException(
+                    status_code=HTTP_400_BAD_REQUEST,
+                    detail="Reset Token expired"
+                    )
+            else:
+                # write new password to db
+                new_password_hsh = get_password_hash(new_password)
+                try:
+                    result = await db_session.execute(select(User).filter_by(id=db_result.user_id))
+                    db_user = result.scalar_one_or_none()
+                    if db_user:
+                        db_user.hashed_password = new_password_hsh
+                        LOG.info("Password written to db")
                             # Delete all reset tokens for this user
-                            await db_session.execute(
-                                select(ResetTokens).filter(ResetTokens.user_id == user.id)
+                        delete_result = await db_session.execute(
+                                select(ResetTokens).filter(ResetTokens.user_id == db_user.id)
                             )
-                            delete_result = await db_session.execute(
-                                select(ResetTokens).filter(ResetTokens.user_id == user.id)
-                            )
-                            tokens_to_delete = delete_result.scalars().all()
-                            for token_to_delete in tokens_to_delete:
-                                await db_session.delete(token_to_delete)
-                            
+                        tokens_to_delete = delete_result.scalars().all()
+                        for token_to_delete in tokens_to_delete:
+                            LOG.info("marking tokens for delete")
+                            await db_session.delete(token_to_delete)
+                            LOG.info("Successfully deleted all reset tokens for user...")
                             await db_session.commit()
                             return "Password changed successfully..."
-                    except SQLAlchemyError as e:
-                        LOG.info(f"DB write failed... with error {e}")
-                        raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail=f"Failed to write to db with error {e}"
+                except SQLAlchemyError as e:
+                    LOG.info(f"DB write failed... with error {e}")
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail=f"Failed to write to db with error {e}"
                         )
-            else:
-                LOG.info("DB Hash and token hash not equal")
-                raise HTTPException(
+        else:
+            LOG.info("DB Hash and token hash not equal")
+            raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="failed to verify reset token"
-                )
-        else:
-            LOG.info("failed to get db token")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="invalid reset token"
-            )              
+                )             
     except Exception as e:
         LOG.info(f"failed to create new password with error {e}")
         raise HTTPException(
