@@ -62,7 +62,7 @@ class Settings(BaseSettings):
                               alias="FRONTEND_URL")
 
     class Config:
-        env_file = Path(__file__).parent / ".env"
+        env_file = Path(__file__).resolve().parent / ".env"
     
         env_file_encoding = "utf-8"
 
