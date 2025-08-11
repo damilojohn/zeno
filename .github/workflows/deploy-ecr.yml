@@ -1,14 +1,15 @@
 name: "build docker image-ecr"
 on:
     push:
-        branches: ['master','main']
+        branches: ['main']
     pull_request:
-        branches: ['master','main']
+        branches: ['main']
+
 permissions:
   contents: read
   id-token: write
 env:
-  ECR_URI: 547882234658.dkr.ecr.us-east-1.amazonaws.com 
+  ECR_URI:
 jobs: 
     zeno:
       name: 'zeno'
