@@ -21,7 +21,7 @@ COPY uv.lock /app/server/uv.lock
 RUN apt-get update && \
     apt-get install  -y --no-install-recommends \ 
     build-essential libpq-dev \ 
-    && uv sync --no-group \ 
+    && uv sync \ 
     && apt-get autoremove -y build-essential\
     && rm -rf /var/lib/apt/lists/*
 
