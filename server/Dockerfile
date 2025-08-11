@@ -4,8 +4,8 @@ LABEL org.opencontainers.image.source=https://github.com/zeno
 LABEL org.opencontainers.image.description="Zeno"
 LABEL org.opencontainers.image.licenses=Apache-2.0
 
-RUN useradd -m appuser
-USER appuser
+# RUN useradd -m appuser
+# USER appuser
 
 WORKDIR /app/server/
 
