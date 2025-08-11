@@ -43,3 +43,4 @@ ENV PATH="/app/server/.venv/bin:$PATH"
 EXPOSE 8080
 # CMD ["uvicorn","zeno.app:app","--port=8080"]
 CMD ["uv","run" ,"task", "api"]
+# CMD ['uv',"run","task","workers"]
