@@ -5,7 +5,10 @@ from pydantic import EmailStr
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_400_BAD_REQUEST
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 
 from zeno.api.core.utils import LOG
 from zeno.api.core.security import (get_password_hash,
@@ -24,7 +27,7 @@ from zeno.api.user.schemas import (UserResponse, UserCreate,
                                    LoginRequest)
 
 from zeno.api.models.users import User, ResetTokens
-from zeno.api.core.db import get_db_session
+from zeno.api.core.db import get_db_session, get_async_db_session
 from zeno.api.core.config import Settings
 
 settings = Settings()
@@ -33,7 +36,7 @@ oauth2scheme = OAuth2PasswordBearer(tokenUrl="/v2/auth/form-login")
 
 
 async def get_current_user(token: str = Depends(oauth2scheme),
-                           session: AsyncSession = Depends(get_db_session)) -> UserResponse:
+                           session: AsyncSession = Depends(get_async_db_session)) -> UserResponse:
     """Get current db user from JWT"""
     try:
         LOG.info("Getting User from JWT")
@@ -61,7 +64,7 @@ async def get_current_user(token: str = Depends(oauth2scheme),
 
 async def add_new_user(
     new_user: UserCreate,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_async_db_session)
 ):
     try:
         # Check if user exists
@@ -117,7 +120,7 @@ async def add_new_user(
 
 
 async def authenticate_user(user: LoginRequest,
-                            session: AsyncSession = Depends(get_db_session)):
+                            session: AsyncSession = Depends(get_async_db_session)):
     try:
         result = await session.execute(select(User).filter(
             User.email == user.email))
@@ -300,58 +303,62 @@ async def create_new_password(new_password,
         )
 
 
-# async def handle_google_oauth(
-#     code: str,
-#     redirect_uri: str,
-#     session: AsyncSession = Depends(get_db_session)
-# ):
-#     try:
-#         # Verify the Google OAuth token
-#         idinfo = id_token.verify_oauth2_token(
-#             code,
-#             requests.Request(),
-#             settings.google_client_id
-#         )
+async def handle_google_oauth(
+    code: str,
+    redirect_uri: str,
+    session: AsyncSession = Depends(get_async_db_session)
+):
+    try:
+        # Verify the Google OAuth token
+        idinfo = id_token.verify_oauth2_token(
+            code,
+            requests.Request(),
+            settings.google_client_id
+        )
 
-#         if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-#             raise ValueError('Invalid issuer')
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Invalid issuer')
 
-#         email = idinfo['email']
-#         name = idinfo.get('name', '')
+        email = idinfo['email']
+        name = idinfo.get('name', '')
 
-#         # Check if user exists
-#         result = await session.execute(select(User).filter(User.email == email))
-#         user = result.scalar_one_or_none()
-#         is_new_user = False
+        # Check if user exists
+        result = await session.execute(select(User).filter(User.email == email))
+        user = result.scalar_one_or_none()
+        is_new_user = False
 
-#         if not user:
-#             # Create new user
-#             user = User(
-#                 email=email,
-#                 username=name or email.split('@')[0],
-#                 auth_provider="google",
-#                 is_verified=True  # Google emails are pre-verified
-#             )
-#             session.add(user)
-#             await session.commit()
-#             await session.refresh(user)
-#             is_new_user = True
+        if not user:
+            # Create new user
+            user = User(
+                email=email,
+                username=name or email.split('@')[0],
+                auth_provider="google",
+                is_verified=True  # Google emails are pre-verified
+            )
+            session.add(user)
+            await session.commit()
+            await session.refresh(user)
+            is_new_user = True
 
-#         # Generate tokens
-#         access_token = create_access_token({"sub": user.email})
-#         refresh_token = create_refresh_token({"sub": user.email})
+        # Generate tokens
+        access_token = create_access_token({"sub": user.email})
+        refresh_token = create_refresh_token({"sub": user.email})
 
-#         return {
-#             "user": db_user,
-#             "access_token": access_token,
-#             "refresh_token": refresh_token,
-#             "message": "User created successfully"
-#         }
+        return {
+            "user": UserResponse(
+                email=email,
+                is_verified=True,
+                id = user.id
+            ),
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "message": "User created successfully"
+        }
 
-#     except SQLAlchemyError as e:
-#         await session.rollback()
-#         LOG.error("Database error during user creation", error=str(e))
-#         raise HTTPException(
-#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             detail="Error creating user"
-#         )
+    except SQLAlchemyError as e:
+        await session.rollback()
+        LOG.error("error handling google auth", error=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error authenticating user"
+        )

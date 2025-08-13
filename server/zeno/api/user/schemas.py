@@ -44,26 +44,30 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class OAuthRequest(BaseModel):
+class GoogleAuthRequest(BaseModel):
     id_token: str
     redirect_uri: str
 
 
-class OAuthResponse(BaseModel):
+class GoogleAuthResponse(BaseModel):
     user: UserResponse
     access_token: str
     refresh_token: str
-    is_new_user: bool
+    message: str
+
 
 class ForgotPasswordRequest(BaseModel):
     email: str
+
 
 class PasswordResetRequest(BaseModel):
     reset_token:str
     new_password: str
 
+
 class PasswordResetResponse(BaseModel):
     msg: str
+
 
 class ResetTokenResponse(BaseModel):
     msg:str

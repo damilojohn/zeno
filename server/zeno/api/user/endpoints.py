@@ -15,7 +15,9 @@ from zeno.api.user.schemas import (
     ForgotPasswordRequest,
     PasswordResetRequest,
     PasswordResetResponse,
-    ResetTokenResponse
+    ResetTokenResponse,
+    GoogleAuthRequest,
+    GoogleAuthResponse
 )
 
 from zeno.api.models.users import User
@@ -24,6 +26,7 @@ from zeno.api.user.service import (
     get_current_user,
     add_new_user,
     authenticate_user,
+    handle_google_oauth,
     get_refresh_token,
     reset_password,
     create_new_password
@@ -90,6 +93,14 @@ async def login(
     """
     return await authenticate_user(login_data, session)
 
+@router.post("/google",
+            response_model=GoogleAuthResponse,
+            status_code=200)
+async def google_auth(
+    auth_request: GoogleAuthRequest,
+    session: AsyncSession = Depends(get_async_db_session)):
+    """Endpoint for authenticating users with Google Oauth"""
+    return handle_google_oauth(auth_request.id_token, auth_request.redirect_uri, session)
 
 @router.post("/form-login",
              response_model=TokenResponse,
