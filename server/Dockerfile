@@ -1,42 +1,38 @@
-FROM python:3.13-slim as builder
+#Multi-stage build
+FROM python:3.13 AS builder
 
 LABEL org.opencontainers.image.source=https://github.com/zeno
 LABEL org.opencontainers.image.description="Zeno"
 LABEL org.opencontainers.image.licenses=Apache-2.0
 
-# RUN useradd -m appuser
-# USER appuser
+WORKDIR /usr/app/server
 
-WORKDIR /usr/app/server/
-
-# COPY pyproject.toml uv.lock /app/server/
-RUN pip install uv
-#copy source code
-COPY /zeno/ /app/server/zeno
-COPY pyproject.toml  uv.lock /app/server/
+COPY pyproject.toml uv.lock /usr/app/server/
 
 
-# Setup system dependencies
 RUN apt-get update && \
-    apt-get install  -y --no-install-recommends \ 
-    build-essential libpq-dev \ 
-    && uv sync \ 
-    && apt-get autoremove -y build-essential\
-    && rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+    build-essential libpq-dev
 
-# FROM python:3.13-slim
+RUN pip install uv && \
+    uv sync
 
-# WORKDIR /app
+COPY /zeno /usr/app/server/zeno
 
-# #get python dependencies
-# COPY --from=builder /app/server/.venv/ /app/.venv/
-ENV PATH="/app/server/.venv/bin:$PATH"
-# #get source code
-# COPY --from=builder /app/server/zeno /app/zeno
+RUN apt-get autoremove -y build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
+FROM python:3.13-slim
 
+WORKDIR /usr/app/server
+
+COPY --from=builder /usr/app/server/zeno/ /usr/app/server/zeno/
+COPY --from=builder /usr/app/server/.venv /usr/app/server/.venv
+
+ENV PATH="/usr/app/server/.venv/bin:$PATH"
 
 EXPOSE 8080
-# CMD ["uvicorn","zeno.app:app","--port=8080"]
-# CMD ["uv","run" ,"task", "api"]
-CMD ["uv","run","task","workers"]
+
+CMD ["uvicorn", "zeno.app:app", "--host=0.0.0.0", "--port=8080", "--loop=uvloop"]
+# CMD ["gunicorn", "zeno.app:app", "bind=0.0.0.0:8080", "-w=4","-k=uvicorn.workers.UvicornWorker"]
+

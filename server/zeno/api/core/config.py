@@ -2,8 +2,6 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-print(Path(__file__).resolve().parent / ".env")
-
 class Settings(BaseSettings):
     env: str = Field(...,
                      alias="ENVIRONMENT")
