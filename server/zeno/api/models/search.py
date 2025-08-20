@@ -19,3 +19,5 @@ class SearchHistory(RecordModel):
     user = relationship("user", back_populates="searchHistory")
 
     query: Mapped[str] = mapped_column(String(256))
+
+

@@ -42,6 +42,7 @@ dependencies = [
     "jinja2>=3.1.0",
     "asyncpg>=0.29.0",
     "google-auth>=2.40.3",
+    "uvloop>=0.21.0",
 ]
 
 [build-system]
@@ -49,8 +50,8 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.taskipy.tasks]
-api = { cmd = "uvicorn zeno.app:app --host=0.0.0.0 --port=8080"}
-workers = {cmd = "gunicorn zeno.app:app  --bind 0.0.0.0:8080 -w 4 -k uvicorn.workers.UvicornWorker"}
+api = { cmd = "uvicorn zeno.app:app --host=0.0.0.0 --port=8080 --loop=uvloop"}
+api_prod = {cmd = "gunicorn zeno.app:app  --bind 0.0.0.0:8080 -w 4 -k uvicorn.workers.UvicornWorker"}
 
 [tool.poetry.packages]
 packages = [

@@ -7,15 +7,14 @@ LABEL org.opencontainers.image.licenses=Apache-2.0
 # RUN useradd -m appuser
 # USER appuser
 
-WORKDIR /app/server/
+WORKDIR /usr/app/server/
 
 # COPY pyproject.toml uv.lock /app/server/
 RUN pip install uv
 #copy source code
 COPY /zeno/ /app/server/zeno
-COPY pyproject.toml /app/server/pyproject.toml
-COPY uv.lock /app/server/uv.lock
-# RUN pip install uv
+COPY pyproject.toml  uv.lock /app/server/
+
 
 # Setup system dependencies
 RUN apt-get update && \
@@ -35,9 +34,6 @@ ENV PATH="/app/server/.venv/bin:$PATH"
 # #get source code
 # COPY --from=builder /app/server/zeno /app/zeno
 
-
-# RUN useradd -m appuser
-# USER appuser
 
 
 EXPOSE 8080
