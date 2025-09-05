@@ -8,8 +8,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: Annotated[str, StringConstraints(
-        strip_whitespace=True, max_length=64)]
+    password: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)]
     # username: Annotated[str, StringConstraints(
     #     strip_whitespace=True, max_length=64)]
 
@@ -61,7 +60,7 @@ class ForgotPasswordRequest(BaseModel):
 
 
 class PasswordResetRequest(BaseModel):
-    reset_token:str
+    reset_token: str
     new_password: str
 
 
@@ -70,4 +69,4 @@ class PasswordResetResponse(BaseModel):
 
 
 class ResetTokenResponse(BaseModel):
-    msg:str
+    msg: str

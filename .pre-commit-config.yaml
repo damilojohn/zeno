@@ -18,13 +18,15 @@ repos:
 
   # black for python autoformatting
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 24.4.2
     hooks:
       - id: black
 
   # ruff for Python linting
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.0.270"
+    rev: "v0.6.9"
     hooks:
       - id: ruff
+        args: ["--fix"]
+      - id: ruff-format

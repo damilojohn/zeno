@@ -97,24 +97,24 @@ PASSWORD_RESET_TEMPLATE = """
             <div class="logo">📚 Zeno</div>
             <div class="title">Password Reset Request</div>
         </div>
-        
+
         <div class="content">
             <p>Hello,</p>
-            
+
             <p>We received a request to reset your password for your Zeno account. If you didn't make this request, you can safely ignore this email.</p>
-            
+
             <p>To reset your password, please use the following token:</p>
-            
+
             <div class="token">
                 <strong>{{ reset_token }}</strong>
             </div>
-            
+
             <p>Or click the button below to go to the password reset page:</p>
-            
+
             <div style="text-align: center;">
                 <a href="{{ reset_url }}" class="button">Reset Password</a>
             </div>
-            
+
             <div class="warning">
                 <strong>⚠️ Important:</strong>
                 <ul>
@@ -124,7 +124,7 @@ PASSWORD_RESET_TEMPLATE = """
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer">
             <p>This is an automated message from Zeno. Please do not reply to this email.</p>
             <p>If you have any questions, please contact our support team.</p>
@@ -135,15 +135,17 @@ PASSWORD_RESET_TEMPLATE = """
 """
 
 
-async def send_password_reset_email(email: str, reset_token: str, username: str) -> bool:
+async def send_password_reset_email(
+    email: str, reset_token: str, username: str
+) -> bool:
     """
     Send HTML password reset email to user
-    
+
     Args:
         email: User's email address
         reset_token: The reset token to include in the email
         username: User's username for personalization
-        
+
     Returns:
         bool: True if email sent successfully, False otherwise
     """
@@ -153,23 +155,23 @@ async def send_password_reset_email(email: str, reset_token: str, username: str)
         message["Subject"] = "Password Reset Request - Zeno"
         message["From"] = settings.email_from
         message["To"] = email
-        
+
         # Create reset URL
         reset_url = f"{settings.frontend_url}/reset-password?token={reset_token}"
-        
+
         # Render HTML template
         template = Template(PASSWORD_RESET_TEMPLATE)
         html_content = template.render(
             reset_token=reset_token,
             reset_url=reset_url,
             username=username,
-            expiry_minutes=settings.reset_tok_exp
+            expiry_minutes=settings.reset_tok_exp,
         )
-        
+
         # Create HTML part
         html_part = MIMEText(html_content, "html")
         message.attach(html_part)
-        
+
         # Send email
         await aiosmtplib.send(
             message,
@@ -177,12 +179,12 @@ async def send_password_reset_email(email: str, reset_token: str, username: str)
             port=settings.smtp_port,
             username=settings.smtp_username,
             password=settings.smtp_password,
-            use_tls=True
+            use_tls=True,
         )
-        
+
         LOG.info(f"Password reset email sent successfully to {email}")
         return True
-        
+
     except Exception as e:
         LOG.error(f"Failed to send password reset email to {email}: {e}")
         return False
@@ -191,10 +193,10 @@ async def send_password_reset_email(email: str, reset_token: str, username: str)
 async def send_test_email(email: str) -> bool:
     """
     Send a test email to verify email configuration
-    
+
     Args:
         email: Email address to send test to
-        
+
     Returns:
         bool: True if email sent successfully, False otherwise
     """
@@ -203,7 +205,7 @@ async def send_test_email(email: str) -> bool:
         message["Subject"] = "Test Email - Zeno"
         message["From"] = settings.email_from
         message["To"] = email
-        
+
         html_content = """
         <html>
         <body>
@@ -212,22 +214,22 @@ async def send_test_email(email: str) -> bool:
         </body>
         </html>
         """
-        
+
         html_part = MIMEText(html_content, "html")
         message.attach(html_part)
-        
+
         await aiosmtplib.send(
             message,
             hostname=settings.smtp_server,
             port=settings.smtp_port,
             username=settings.smtp_username,
             password=settings.smtp_password,
-            use_tls=True
+            use_tls=True,
         )
-        
+
         LOG.info(f"Test email sent successfully to {email}")
         return True
-        
+
     except Exception as e:
         LOG.error(f"Failed to send test email to {email}: {e}")
-        return False 
+        return False

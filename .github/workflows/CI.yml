@@ -1,0 +1,40 @@
+name: "build docker image-ecr"
+on:
+    push:
+        branches: ['main']
+    pull_request:
+        branches: ['main']
+
+permissions:
+  contents: read
+  id-token: write
+jobs:
+    tests:
+      name: 'Zeno Server Tests'
+      runs-on: ubuntu-latest
+      environment: production
+      timeout-minutes: 10
+
+      defaults:
+          run:
+              shell: bash
+      steps:
+        - name: install uv
+          uses: astral-sh/uv@v6
+          with:
+            enable-cache: true
+        - name: setup python
+          uses: actions/setup-python@v5
+          with:
+            python-version-file: "server/pyproject.toml"
+        - name: uv install
+          working-directory: ./server
+          run: |
+            uv sync
+        - name: run server
+          working-directory: ./server
+          run: |
+            uv run task api
+
+
+

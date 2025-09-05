@@ -6,22 +6,22 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from zeno.api.core.db import (_create_engine,
-                             _create_async_engine,
-                              create_session,
-                              create_async_session,
-                              AsyncEngine,
-                              AsyncSessionMaker,
-                              init_db,
-                              init_db_async
-                              )
+from zeno.api.core.db import (
+    _create_async_engine,
+    create_async_session,
+    AsyncEngine,
+    AsyncSessionMaker,
+    init_db_async,
+)
 from zeno.api.core.utils import LOG
 from zeno.api.core.config import Settings
+
 # from zeno.api.search.endpoints import router as search_router
 from zeno.api.user.endpoints import router as user_router
 
 
 settings = Settings()
+
 
 class State(TypedDict):
     engine: AsyncEngine
@@ -39,7 +39,9 @@ def configure_cors(app: FastAPI, settings: Settings) -> None:
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
+async def lifespan(
+    app: FastAPI,
+) -> AsyncIterator[State]:
     LOG.info("Zeno API starting.....")
 
     # set up app state and load global settings
@@ -51,10 +53,7 @@ async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
     try:
         LOG.info("Zeno API started.......")
 
-        yield {
-            "engine": engine,
-            "session_maker": session_maker
-            }
+        yield {"engine": engine, "session_maker": session_maker}
     finally:
         await engine.dispose()
 
@@ -62,8 +61,7 @@ async def lifespan(app: FastAPI,) -> AsyncIterator[State]:
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Zeno's Backend",
-                  lifespan=lifespan)
+    app = FastAPI(title="Zeno's Backend", lifespan=lifespan)
     # Add exception handlers later
 
     # add routers
@@ -83,5 +81,5 @@ if __name__ == "__main__":
         host=settings.host,
         log_level="info",
         port=settings.port,
-        reload=True
+        reload=True,
     )

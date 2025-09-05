@@ -3,7 +3,8 @@ from zeno.api.core.utils import LOG
 
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
-import secrets, hashlib
+import secrets
+import hashlib
 from datetime import datetime, timedelta, timezone
 import jwt
 
@@ -14,7 +15,6 @@ pwd_context = CryptContext(
     argon2__time_cost=4,
     argon2__memory_cost=65536,
     argon2__parallelism=4,
-
 )
 
 settings = Settings()
@@ -33,12 +33,12 @@ def create_reset_token() -> str:
     return token
 
 
-def get_token_hash(token:str)-> str:
+def get_token_hash(token: str) -> str:
     token_hash = hashlib.sha256(token.encode()).hexdigest()
     return token_hash
 
 
-def verify_token_hash(token:str, db_hash: str):
+def verify_token_hash(token: str, db_hash: str):
     try:
         token_hash = get_token_hash(token)
         LOG.info(f"token hash {token_hash} db_hash {db_hash}")
@@ -50,14 +50,10 @@ def verify_token_hash(token:str, db_hash: str):
 def create_access_token(data: dict):
     to_encode = data.copy()
     iat = datetime.now(timezone.utc)
-    expire = iat + timedelta(
-        days=settings.jwt_refresh_exp)
-    to_encode.update({"exp": expire,
-                    "iat":iat})
+    expire = iat + timedelta(days=settings.jwt_refresh_exp)
+    to_encode.update({"exp": expire, "iat": iat})
     token = jwt.encode(
-        to_encode,
-        settings.jwt_secret_key,
-        algorithm=settings.jwt_algorithm
+        to_encode, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
     )
     return token
 
@@ -66,17 +62,16 @@ def create_refresh_token(data: dict):
     to_encode = data.copy()
     # Refresh tokens typically last longer, e.g., 7 days
     iat = datetime.now(timezone.utc)
-    expire = iat + timedelta(
-        days=settings.jwt_refresh_exp)
-    to_encode.update({
-        "exp": expire,
-        "iat": iat,
-        "token_type": "refresh"  # Adding token type for additional security
-    })
+    expire = iat + timedelta(days=settings.jwt_refresh_exp)
+    to_encode.update(
+        {
+            "exp": expire,
+            "iat": iat,
+            "token_type": "refresh",  # Adding token type for additional security
+        }
+    )
     token = jwt.encode(
-        to_encode,
-        settings.jwt_refresh_secret_key,
-        algorithm=settings.jwt_algorithm
+        to_encode, settings.jwt_refresh_secret_key, algorithm=settings.jwt_algorithm
     )
     LOG.info("user refresh token created...")
     return token
@@ -86,11 +81,9 @@ def verify_access_token(token: str):
     """get user from jwt data"""
     try:
         payload = jwt.decode(
-            token,
-            settings.jwt_secret_key,
-            algorithms=settings.jwt_algorithm
+            token, settings.jwt_secret_key, algorithms=settings.jwt_algorithm
         )
-        return payload['sub']
+        return payload["sub"]
     except jwt.ExpiredSignatureError as e:
         LOG.info(f"Access token  has expired:{str(e)}")
         raise HTTPException(
@@ -108,9 +101,7 @@ def verify_access_token(token: str):
 def verify_refresh_token(token: str):
     try:
         payload = jwt.decode(
-            token,
-            settings.jwt_refresh_secret_key,
-            algorithms=[settings.jwt_algorithm]
+            token, settings.jwt_refresh_secret_key, algorithms=[settings.jwt_algorithm]
         )
         if payload.get("token_type") != "refresh":
             raise ValueError("Invalid token type")
@@ -118,11 +109,10 @@ def verify_refresh_token(token: str):
     except jwt.ExpiredSignatureError as e:
         LOG.info(f"refresh token validation failed with error :{str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Refresh token has expired") from e
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token has expired"
+        ) from e
     except jwt.PyJWTError as e:
         LOG.info(f"Refresh token validation failed with error :{str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh token") from e
-
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
+        ) from e

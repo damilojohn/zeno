@@ -1,0 +1,31 @@
+{
+  "containerDefinitions": [
+    {
+      "essential": true,
+      "image": "547882234658.dkr.ecr.eu-west-2.amazonaws.com/zeno:latest",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "zeno",
+          "awslogs-region": "eu-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "name": "zeno",
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ]
+    }
+  ],
+  "cpu": "256",
+  "executionRoleArn": "arn:aws:iam::547882234658:role/zeno_ecs_task",
+  "family": "zeno",
+  "memory": "1024",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "taskRoleArn": "arn:aws:iam::547882234658:role/zeno_ecs_task"
+}

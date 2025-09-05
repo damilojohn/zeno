@@ -19,18 +19,12 @@ class TimeStampedModel(Model):
     __abstract__ = True
 
     created_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True),
-        nullable=False,
-        default=current_time,
-        index=True
-        )
+        TIMESTAMP(timezone=True), nullable=False, default=current_time, index=True
+    )
 
     updated_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True),
-        nullable=True,
-        default=current_time,
-        index=True
-        )
+        TIMESTAMP(timezone=True), nullable=True, default=current_time, index=True
+    )
 
     def set_modified_at(self):
         self.modified_at = current_time()
@@ -41,10 +35,9 @@ class TimeStampedModel(Model):
 
 class RecordModel(TimeStampedModel):
     __abstract__ = True
-    id: Mapped[UUID] = mapped_column(Uuid,
-                                     primary_key=True,
-                                     index=True,
-                                     default=generate_uuid)
+    id: Mapped[UUID] = mapped_column(
+        Uuid, primary_key=True, index=True, default=generate_uuid
+    )
 
     def _repr__(self) -> str:
         insp = inspect(self)
