@@ -3,7 +3,7 @@ name = "zeno"
 version = "0.1.0"
 description = "Backend for Zeno, a Semantic Search based books recommendation engine"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.13"
 dependencies = [
     "alembic>=1.16.1",
     "annotated-types==0.7.0",
