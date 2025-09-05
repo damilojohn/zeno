@@ -28,11 +28,11 @@ jobs:
           with:
             python-version: '3.13'
         - name: uv install
-          working-directory: ./server
+          working-directory: /server
           run: |
             uv sync
         - name: run server
-          working-directory: ./server
+          working-directory: /server
           run: |
             uv run task api
 
