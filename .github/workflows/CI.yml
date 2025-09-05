@@ -19,6 +19,7 @@ jobs:
           run:
               shell: bash
       steps:
+        - uses: actions/checkout@v4
         - name: install uv
           uses: astral-sh/setup-uv@v6
           with:
@@ -28,13 +29,10 @@ jobs:
           with:
             python-version: '3.13'
         - name: uv install
-          working-directory: /server
+          working-directory: ./server
           run: |
             uv sync
         - name: run server
-          working-directory: /server
+          working-directory: ./server
           run: |
             uv run task api
-
-
-
