@@ -26,7 +26,7 @@ jobs:
         - name: setup python
           uses: actions/setup-python@v5
           with:
-            python-version-file: "server/pyproject.toml"
+            python-version: '3.13'
         - name: uv install
           working-directory: ./server
           run: |
