@@ -28,8 +28,14 @@ def _create_engine(conn_string: str):
 
 def _create_async_engine(conn_string: str):
     """Factory functions for creating async db engine"""
-    return create_async_engine(conn_string, connect_args={"ssl": "require"})
-    # "channel_binding": "require"})
+    return create_async_engine(
+        conn_string,
+        connect_args={"ssl": "require"},
+        pool_size=5,
+        max_overflow=10,
+        pool_recycle=1800,
+        pool_pre_ping=True,
+    )
 
 
 def create_session(engine: Engine):

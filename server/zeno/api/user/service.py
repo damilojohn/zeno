@@ -278,7 +278,7 @@ async def create_new_password(new_password, token: str, db_session: AsyncSession
                             await db_session.commit()
                             return "Password changed successfully..."
                 except SQLAlchemyError as e:
-                    LOG.info(f"DB write failed... with error {e}")
+                    LOG.info(f"DB write failed... with error {e}", exc_info=True)
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         detail=f"Failed to write to db with error {e}",

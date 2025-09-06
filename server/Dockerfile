@@ -28,11 +28,14 @@ WORKDIR /usr/app/server
 
 COPY --from=builder /usr/app/server/zeno/ /usr/app/server/zeno/
 COPY --from=builder /usr/app/server/.venv /usr/app/server/.venv
+COPY --from=builder /usr/app/server/pyproject.toml /usr/app/server/pyproject.toml
+COPY --from=builder /usr/app/server/uv.lock /usr/app/server/uv.lock
 
 ENV PATH="/usr/app/server/.venv/bin:$PATH"
 
 EXPOSE 8080
 
-CMD ["uvicorn", "zeno.app:app", "--host=0.0.0.0", "--port=8080", "--loop=uvloop"]
-# CMD ["gunicorn", "zeno.app:app", "bind=0.0.0.0:8080", "-w=4","-k=uvicorn.workers.UvicornWorker"]
+# CMD ["uv", "run", "task","api"]
+# CMD ["uv", "run", "task","api_prod"]
+CMD ["gunicorn", "zeno.app:app", "bind=0.0.0.0:8080", "-w=4","-k=uvicorn.workers.UvicornWorker"]
 
