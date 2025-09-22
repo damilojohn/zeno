@@ -45,6 +45,7 @@ dependencies = [
     "uvloop>=0.21.0",
     "awscli>=1.42.21",
     "black>=25.1.0",
+    "snakeviz>=2.2.2",
 ]
 
 [build-system]

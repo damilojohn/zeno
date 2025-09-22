@@ -37,5 +37,4 @@ EXPOSE 8080
 
 # CMD ["uv", "run", "task","api"]
 # CMD ["uv", "run", "task","api_prod"]
-CMD ["gunicorn", "zeno.app:app", "bind=0.0.0.0:8080", "-w=4","-k=uvicorn.workers.UvicornWorker"]
-
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-w", "4", "-b", "0.0.0.0:8080", "zeno.app:app"]

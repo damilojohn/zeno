@@ -1,6 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zeno.api.user.schemas import (
@@ -31,6 +32,15 @@ from zeno.api.user.service import (
 from zeno.api.core.email import send_test_email
 
 router = APIRouter(prefix="/v2/auth", tags=["users"])
+
+
+@router.get("/heartbeat")
+def heartbeat():
+    """
+    HealthCheck endpoint
+    """
+    resp = {"status": "ok"}
+    return JSONResponse(status_code=200, content=resp)
 
 
 @router.get("/me", response_model=UserResponse)

@@ -58,6 +58,7 @@ async def lifespan(
         await engine.dispose()
 
     LOG.info("Zeno API shutting down.........")
+    LOG.info("Bye!!")
 
 
 def create_app() -> FastAPI:
@@ -67,6 +68,7 @@ def create_app() -> FastAPI:
     # add routers
     # app.include_router(search_router)
     configure_cors(app, settings)
+
     app.include_router(user_router)
 
     return app
