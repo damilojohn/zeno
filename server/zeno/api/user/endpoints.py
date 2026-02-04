@@ -52,7 +52,7 @@ async def get_user_profile(user: UserResponse = Depends(get_current_user)):
 
 
 @router.post(
-    "/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
+    "/sign-up", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
 )
 async def register_user(
     user: UserCreate, session: AsyncSession = Depends(get_async_db_session)

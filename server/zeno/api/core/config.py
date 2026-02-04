@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     frontend_url: str = Field(default="http://localhost:3000", alias="FRONTEND_URL")
 
     class Config:
-        env_file = Path(__file__).resolve().parent / ".env"
+        env_file = ".env"
 
         env_file_encoding = "utf-8"
 

@@ -71,7 +71,9 @@ def create_refresh_token(data: dict):
         }
     )
     token = jwt.encode(
-        to_encode, settings.jwt_refresh_secret_key, algorithm=settings.jwt_algorithm
+        to_encode,
+        settings.jwt_refresh_secret_key,
+        algorithm=settings.jwt_algorithm
     )
     LOG.info("user refresh token created...")
     return token
