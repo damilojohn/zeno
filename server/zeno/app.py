@@ -16,7 +16,7 @@ from zeno.api.core.db import (
 from zeno.api.core.utils import LOG
 from zeno.api.core.config import Settings
 
-# from zeno.api.search.endpoints import router as search_router
+from zeno.api.search.endpoints import router as search_router
 from zeno.api.user.endpoints import router as user_router
 
 
@@ -65,9 +65,8 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Zeno's Backend", lifespan=lifespan)
     # Add exception handlers later
 
-    # add routers
-    # app.include_router(search_router)
     configure_cors(app, settings)
+    app.include_router(search_router)
 
     app.include_router(user_router)
 

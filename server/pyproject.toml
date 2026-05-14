@@ -46,6 +46,7 @@ dependencies = [
     "black>=25.1.0",
     "snakeviz>=2.2.2",
     "psycopg2-binary>=2.9.11",
+    "fire>=0.7.1",
 ]
 
 [build-system]

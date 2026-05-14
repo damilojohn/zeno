@@ -14,7 +14,7 @@ pwd_context = CryptContext(
     deprecated="auto",
     argon2__time_cost=4,
     argon2__memory_cost=65536,
-    argon2__parallelism=4,
+    argon2__parallelism=1,
 )
 
 settings = Settings()
@@ -71,9 +71,7 @@ def create_refresh_token(data: dict):
         }
     )
     token = jwt.encode(
-        to_encode,
-        settings.jwt_refresh_secret_key,
-        algorithm=settings.jwt_algorithm
+        to_encode, settings.jwt_refresh_secret_key, algorithm=settings.jwt_algorithm
     )
     LOG.info("user refresh token created...")
     return token

@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     jwt_refresh_exp: int = Field(..., alias="JWT_REFRESH_EXP")
     reset_tok_exp: int = Field(..., alias="RESET_TOK_EXP")
 
+    # AWS / SQS
+    sqs_queue_url: str = Field(default="", alias="SQS_QUEUE_URL")
+    aws_region: str = Field(default="us-east-1", alias="AWS_REGION")
+
     # Email settings
     smtp_server: str = Field(default="smtp.gmail.com", alias="SMTP_SERVER")
     smtp_port: int = Field(default=587, alias="SMTP_PORT")

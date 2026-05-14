@@ -97,7 +97,7 @@ async def add_new_user(
         # Generate tokens
         try:
             access_token = create_access_token({"sub": str(db_user.id)})
-            refresh_token = create_refresh_token({"": ""})
+            refresh_token = create_refresh_token({"sub": str(db_user.id)})
         except Exception as e:
             LOG.info(f"failed with error {e}")
             raise e
@@ -143,8 +143,7 @@ async def authenticate_user(
         refresh_token = create_refresh_token({"sub": str(db_user.id)})
 
         return TokenResponse(
-            access_token=access_token, refresh_token=refresh_token,
-            token_type="bearer"
+            access_token=access_token, refresh_token=refresh_token, token_type="bearer"
         )
 
     except HTTPException:

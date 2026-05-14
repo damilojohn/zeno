@@ -2,13 +2,7 @@ from enum import StrEnum
 from datetime import datetime
 
 from sqlalchemy import Boolean, String, TIMESTAMP, ForeignKey
-
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-    relationship,
-)
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from zeno.api.models.base import RecordModel, current_time, UUID
 
@@ -26,26 +20,42 @@ class User(RecordModel):
     )
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     full_name: Mapped[str] = mapped_column(String(128), unique=True, nullable=True)
-    # password nullable for oauth users
-
     hashed_password: Mapped[str] = mapped_column(String(256), nullable=True)
-    reset_tokens = relationship("ResetTokens", back_populates="users")
-    # oauth_provider: Mapped[OauthProvider] = mapped_column(Enum(enums=OauthProvider))
 
-    # searches = relationship("SearchHistory", back_populates="user")
-    # favorite_books = relationship("FavoriteBook", back_populates="user")
-    # reading_lists = relationship("ReadingList", back_populates="user")
+    reset_tokens = relationship(
+        "ResetTokens", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+    )
+    search_jobs = relationship(
+        "SearchJob", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+    )
+    book_recommendations = relationship(
+        "BookRecommendation", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+    )
+    reading_history = relationship(
+        "ReadingHistory", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+    )
+    interests = relationship(
+        "UserInterest", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+    )
+    topic_recommendations = relationship(
+        "TopicRecommendation", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+    )
 
 
 class ResetTokens(RecordModel):
     __tablename__ = "PasswordResetTokens"
+
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     token_hash: Mapped[str] = mapped_column(String(64))
     to_expire: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True),
-        nullable=False,
-        default=current_time,
+        TIMESTAMP(timezone=True), nullable=False, default=current_time,
     )
-    users = relationship("User", back_populates="reset_tokens")
+    user = relationship("User", back_populates="reset_tokens")

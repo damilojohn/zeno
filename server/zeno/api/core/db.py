@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy import text
 
 from zeno.api.models.base import Base
+import zeno.api.models  # noqa: F401 — registers all models with SQLAlchemy mapper
 from zeno.api.core.config import Settings
 import structlog
 
@@ -82,7 +83,7 @@ async def get_async_db_session(
             yield session
             await session.commit()
         except Exception as e:
-            LOG.info(f"db session failed with exception {e}")
+            LOG.error(f"db session failed with exception {e}")
             await session.rollback()
             raise e
 
@@ -106,8 +107,8 @@ async def create_tables_dev_async(engine: AsyncEngine):
         # async with engine.begin() as conn:
         #     await conn.run_sync(Base.metadata.drop_all)
         LOG.info("🔄 Creating all tables...")
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+        # async with engine.begin() as conn:
+        #     await conn.run_sync(Base.metadata.create_all)
     except Exception as e:
         LOG.error(f"error creating tables: {e}")
         raise e
@@ -161,12 +162,9 @@ async def init_db_async(engine: AsyncEngine, settings: Settings):
     """Initialize db tables using async engine"""
 
     if settings.is_development:
-        LOG.info("Setting up tables using create_all()....")
+        # Ensure pgvector extension exists — safe to run on every startup
         async with engine.begin() as conn:
             await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-            await conn.commit()
-        await create_tables_dev_async(engine)
-        LOG.info("Successfully setup DB tables....")
+        LOG.info("pgvector extension ready. Schema managed by Alembic.")
     if settings.is_production:
         LOG.info("Production env: Use Alembic migrations")
-        # check_alembic_current(engine)

@@ -2,13 +2,12 @@
 FROM python:3.13-slim AS builder
 
 LABEL org.opencontainers.image.source=https://github.com/zeno
-LABEL org.opencontainers.image.description="Zeno"
+LABEL org.opencontainers.image.description="Zeno Worker"
 LABEL org.opencontainers.image.licenses=Apache-2.0
 
 WORKDIR /usr/app/server
 
 COPY pyproject.toml uv.lock /usr/app/server/
-
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpq-dev \
@@ -33,8 +32,4 @@ ENV PATH="/usr/app/server/.venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-EXPOSE 8080
-
-# CMD ["uv", "run", "task","api"]
-# CMD ["uv", "run", "task","api_prod"]
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-w", "4", "-b", "0.0.0.0:8080", "zeno.app:app"]
+CMD ["python", "-m", "zeno.worker"]
