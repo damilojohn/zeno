@@ -40,7 +40,7 @@ class RecommendationResponse(BaseModel):
 
 
 class SearchResultResponse(BaseModel):
-    job_id: UUID4
+    id: UUID4
     status: JobStatus
     query: str
     created_at: datetime

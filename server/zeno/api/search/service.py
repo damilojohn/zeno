@@ -16,26 +16,26 @@ from zeno.api.models.search import SearchJob, JobStatus, BookRecommendation
 settings = Settings()
 
 
-def _sqs_client():
-    return boto3.client("sqs", region_name=settings.aws_region)
-
-
-async def enqueue_search(query: str, user_id: UUID, db: AsyncSession) -> SearchJob:
+async def enqueue_search(query: str, 
+                         user_id: UUID, 
+                         db: AsyncSession,
+                         sqs_client) -> SearchJob:
     job = SearchJob(user_id=user_id, query=query, status=JobStatus.pending)
     db.add(job)
     await db.commit()
     await db.refresh(job)
 
-    if settings.sqs_queue_url:
+    if settings.search_queue_url:
         try:
             await asyncio.to_thread(
-                _sqs_client().send_message,
-                QueueUrl=settings.sqs_queue_url,
+                sqs_client.send_message,
+                QueueUrl=settings.search_queue_url,
                 MessageBody=json.dumps({
                     "job_id": str(job.id),
                     "user_id": str(user_id),
                     "query": query,
                 }),
+                MessageGroupId=str(user_id),
             )
         except (BotoCoreError, ClientError) as e:
             job.status = JobStatus.failed

@@ -49,6 +49,8 @@ dependencies = [
     "fire>=0.7.1",
     "boto3>=1.40.21",
     "stripe>=15.1.0",
+    "ruff>=0.15.13",
+    "mypy-boto3-sqs>=1.43.0",
 ]
 
 [build-system]
@@ -58,6 +60,7 @@ build-backend = "setuptools.build_meta"
 [tool.taskipy.tasks]
 api = { cmd = "uvicorn zeno.app:app --host=0.0.0.0 --port=8080"}
 api_prod = {cmd = "gunicorn zeno.app:app  --bind 0.0.0.0:8080 -w 4 -k uvicorn.workers.UvicornWorker"}
+search_worker = {cmd = "python -m zeno.worker --type=search_agent"}
 lint = {cmd = "black ."}
 
 [tool.poetry.packages]

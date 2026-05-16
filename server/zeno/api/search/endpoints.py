@@ -12,6 +12,7 @@ from zeno.api.search.schemas import (
     SearchJobResponse,
     SearchResultResponse,
 )
+from zeno.api.search.dependencies import get_sqs_client, SQSClient
 from zeno.api.search.service import enqueue_search, get_job, get_search_history
 
 router = APIRouter(prefix="/api/v2/search", tags=["search"])
@@ -26,16 +27,15 @@ async def create_search(
     request: SearchRequest,
     user: UserResponse = Depends(get_current_user),
     db: AsyncSession = Depends(get_async_db_session),
+    sqs_client: SQSClient = Depends(get_sqs_client)
 ):
-    job = await enqueue_search(request.query, user.id, db)
+    job = await enqueue_search(request.query, user.id, db, sqs_client)
     return ApiResponse(
         msg="Search job created",
         data=SearchJobResponse.model_validate(job),
     )
 
 
-# /history must be defined before /{job_id} so FastAPI doesn't try to parse
-# "history" as a UUID
 @router.get("/history", response_model=ApiResponse[list[SearchResultResponse]])
 async def search_history(
     user: UserResponse = Depends(get_current_user),

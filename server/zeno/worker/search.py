@@ -4,12 +4,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from zeno.api.core.utils import LOG
+from zeno.api.core.config import settings
 from zeno.api.models import SearchJob
 from zeno.api.models.search import JobStatus
 from zeno.worker.base import SQSWorker
 
 
 class SearchWorker(SQSWorker):
+    queue_url = settings.search_queue_url
+
     async def process_message(self, body: dict, db: AsyncSession) -> None:
         job_id = UUID(body["job_id"])
         user_id = UUID(body["user_id"])

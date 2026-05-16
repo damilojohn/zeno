@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import HTTPException, RequestValidationError
 import uvicorn
 
+from mypy_boto3_sqs import SQSClient
+
 from zeno.api.core.db import (
     _create_async_engine,
     create_async_session,
@@ -14,6 +16,7 @@ from zeno.api.core.db import (
     AsyncSessionMaker,
     init_db_async,
 )
+from zeno.api.core.queue import get_sqs_client
 from zeno.api.core.utils import LOG
 from zeno.api.core.config import Settings
 from zeno.api.core.exceptions import (
@@ -34,6 +37,7 @@ settings = Settings()
 class State(TypedDict):
     engine: AsyncEngine
     async_session_maker: AsyncSessionMaker
+    sqs_queue: SQSClient
 
 
 def configure_cors(app: FastAPI, settings: Settings) -> None:
@@ -57,13 +61,20 @@ async def lifespan(
     await init_db_async(engine, settings)
     session_maker = create_async_session(engine)
     app.state.session_maker = session_maker
+    sqs_client = get_sqs_client()
+    LOG.info("Connected to SQS......")
+    app.state.sqs_client = sqs_client
 
     try:
         LOG.info("Zeno API started.......")
 
-        yield {"engine": engine, "session_maker": session_maker}
+        yield {"engine": engine, 
+               "session_maker": session_maker,
+               "sqs_queue": sqs_client}
     finally:
         await engine.dispose()
+    
+
 
     LOG.info("Zeno API shutting down.........")
     LOG.info("Bye!!")

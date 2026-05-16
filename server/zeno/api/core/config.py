@@ -44,8 +44,10 @@ class Settings(BaseSettings):
     stripe_webhook_secret: str = Field(default="", alias="STRIPE_WEBHOOK_SECRET")
 
     # AWS / SQS
-    sqs_queue_url: str = Field(default="", alias="SQS_QUEUE_URL")
-    aws_region: str = Field(default="us-east-1", alias="AWS_REGION")
+    aws_secret_key: str = Field(default="",  alias="AWS_SECRET_KEY")
+    aws_access_key_id: str = Field(default="", alias="AWS_ACCESS_KEY_ID")
+    search_queue_url: str = Field(default="", alias="SQS_SEARCH_QUEUE_URL")
+    aws_region: str = Field(default="eu-west-1", alias="AWS_DEFAULT_REGION")
 
     # Email settings
     smtp_server: str = Field(default="smtp.gmail.com", alias="SMTP_SERVER")
@@ -67,3 +69,6 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.env == "production"
+
+
+settings = Settings()
