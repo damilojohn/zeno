@@ -58,7 +58,9 @@ async def get_current_user(
     result = await session.execute(select(User).filter(User.id == user_id))
     user = result.scalar_one_or_none()
     if user:
-        return UserResponse(email=user.email, is_verified=user.email_verified, id=user.id)
+        return UserResponse(
+            email=user.email, is_verified=user.email_verified, id=user.id
+        )
     raise UnauthorizedError("Invalid authentication credentials")
 
 
@@ -155,9 +157,7 @@ async def reset_password(email: str, db_session: AsyncSession):
         db_user = result.scalar_one_or_none()
 
         if not db_user:
-            return ResetTokenResponse(
-                msg="Password reset email sent successfully"
-            )
+            return ResetTokenResponse(msg="Password reset email sent successfully")
 
         token = create_reset_token()
         LOG.info(f"displaying token in logs for tests token : {token}")
@@ -227,9 +227,7 @@ async def create_new_password(new_password: str, token: str, db_session: AsyncSe
         raise InternalServerError()
 
 
-async def handle_google_oauth(
-    code: str, redirect_uri: str, session: AsyncSession
-):
+async def handle_google_oauth(code: str, redirect_uri: str, session: AsyncSession):
     try:
         idinfo = id_token.verify_oauth2_token(
             code, requests.Request(), settings.google_client_id
@@ -259,6 +257,7 @@ async def handle_google_oauth(
         refresh_token = create_refresh_token({"sub": str(user.id)})
 
         from zeno.api.user.schemas import GoogleAuthResponse
+
         return GoogleAuthResponse(
             user=UserResponse(email=email, is_verified=True, id=user.id),
             access_token=access_token,

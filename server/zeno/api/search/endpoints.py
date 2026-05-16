@@ -27,7 +27,7 @@ async def create_search(
     request: SearchRequest,
     user: UserResponse = Depends(get_current_user),
     db: AsyncSession = Depends(get_async_db_session),
-    sqs_client: SQSClient = Depends(get_sqs_client)
+    sqs_client: SQSClient = Depends(get_sqs_client),
 ):
     job = await enqueue_search(request.query, user.id, db, sqs_client)
     return ApiResponse(

@@ -1,4 +1,3 @@
-from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -44,7 +43,7 @@ class Settings(BaseSettings):
     stripe_webhook_secret: str = Field(default="", alias="STRIPE_WEBHOOK_SECRET")
 
     # AWS / SQS
-    aws_secret_key: str = Field(default="",  alias="AWS_SECRET_KEY")
+    aws_secret_key: str = Field(default="", alias="AWS_SECRET_KEY")
     aws_access_key_id: str = Field(default="", alias="AWS_ACCESS_KEY_ID")
     search_queue_url: str = Field(default="", alias="SQS_SEARCH_QUEUE_URL")
     aws_region: str = Field(default="eu-west-1", alias="AWS_DEFAULT_REGION")

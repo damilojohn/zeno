@@ -28,8 +28,10 @@ class SearchJob(RecordModel):
 
     user = relationship("User", back_populates="search_jobs")
     recommendations = relationship(
-        "BookRecommendation", back_populates="search_job",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "BookRecommendation",
+        back_populates="search_job",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
 
@@ -46,7 +48,9 @@ class BookRecommendation(RecordModel):
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
     relevance_score: Mapped[Optional[float]] = mapped_column(nullable=True)
-    recommendation_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    recommendation_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0
+    )
 
     search_job = relationship("SearchJob", back_populates="recommendations")
     book = relationship("Book", back_populates="recommendations")

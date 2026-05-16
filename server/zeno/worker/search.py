@@ -35,7 +35,9 @@ class SearchWorker(SQSWorker):
             LOG.error("agent_failed", job_id=str(job_id), error=str(e))
             raise  # propagate so base class leaves message for DLQ retry
 
-    async def _run_agent(self, job: SearchJob, user_id: UUID, query: str, db: AsyncSession) -> None:
+    async def _run_agent(
+        self, job: SearchJob, user_id: UUID, query: str, db: AsyncSession
+    ) -> None:
         # TODO: replace with agent harness
         # from zeno.api.search.agent.harness import run_agent
         # await run_agent(job, user_id, query, db)

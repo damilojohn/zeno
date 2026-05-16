@@ -68,13 +68,13 @@ async def lifespan(
     try:
         LOG.info("Zeno API started.......")
 
-        yield {"engine": engine, 
-               "session_maker": session_maker,
-               "sqs_queue": sqs_client}
+        yield {
+            "engine": engine,
+            "session_maker": session_maker,
+            "sqs_queue": sqs_client,
+        }
     finally:
         await engine.dispose()
-    
-
 
     LOG.info("Zeno API shutting down.........")
     LOG.info("Bye!!")

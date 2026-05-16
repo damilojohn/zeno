@@ -5,6 +5,7 @@ Revises: e2a7ba2fc31e
 Create Date: 2026-05-14 18:12:08.204902
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -12,8 +13,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'c79f9f5d5095'
-down_revision: Union[str, None] = 'e2a7ba2fc31e'
+revision: str = "c79f9f5d5095"
+down_revision: Union[str, None] = "e2a7ba2fc31e"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -21,61 +22,135 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     # 1. Create search_jobs table
-    op.create_table('search_jobs',
-    sa.Column('user_id', sa.Uuid(), nullable=False),
-    sa.Column('query', sa.Text(), nullable=False),
-    sa.Column('status', sa.Enum('pending', 'running', 'complete', 'failed', name='jobstatus'), nullable=False),
-    sa.Column('error_message', sa.Text(), nullable=True),
-    sa.Column('id', sa.Uuid(), nullable=False),
-    sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    op.create_table(
+        "search_jobs",
+        sa.Column("user_id", sa.Uuid(), nullable=False),
+        sa.Column("query", sa.Text(), nullable=False),
+        sa.Column(
+            "status",
+            sa.Enum("pending", "running", "complete", "failed", name="jobstatus"),
+            nullable=False,
+        ),
+        sa.Column("error_message", sa.Text(), nullable=True),
+        sa.Column("id", sa.Uuid(), nullable=False),
+        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False),
+        sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f('ix_search_jobs_created_at'), 'search_jobs', ['created_at'], unique=False)
-    op.create_index(op.f('ix_search_jobs_id'), 'search_jobs', ['id'], unique=False)
-    op.create_index(op.f('ix_search_jobs_updated_at'), 'search_jobs', ['updated_at'], unique=False)
-    op.create_index(op.f('ix_search_jobs_user_id'), 'search_jobs', ['user_id'], unique=False)
+    op.create_index(
+        op.f("ix_search_jobs_created_at"), "search_jobs", ["created_at"], unique=False
+    )
+    op.create_index(op.f("ix_search_jobs_id"), "search_jobs", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_search_jobs_updated_at"), "search_jobs", ["updated_at"], unique=False
+    )
+    op.create_index(
+        op.f("ix_search_jobs_user_id"), "search_jobs", ["user_id"], unique=False
+    )
 
     # 2. Migrate book_recommendations: drop old FK + index, add new column + FK + index
-    op.drop_constraint('book_recommendations_search_history_id_fkey', 'book_recommendations', type_='foreignkey')
-    op.drop_index(op.f('ix_book_recommendations_search_history_id'), table_name='book_recommendations')
-    op.add_column('book_recommendations', sa.Column('search_job_id', sa.Uuid(), nullable=False))
-    op.create_index(op.f('ix_book_recommendations_search_job_id'), 'book_recommendations', ['search_job_id'], unique=False)
-    op.create_foreign_key(None, 'book_recommendations', 'search_jobs', ['search_job_id'], ['id'], ondelete='CASCADE')
-    op.drop_column('book_recommendations', 'search_history_id')
+    op.drop_constraint(
+        "book_recommendations_search_history_id_fkey",
+        "book_recommendations",
+        type_="foreignkey",
+    )
+    op.drop_index(
+        op.f("ix_book_recommendations_search_history_id"),
+        table_name="book_recommendations",
+    )
+    op.add_column(
+        "book_recommendations", sa.Column("search_job_id", sa.Uuid(), nullable=False)
+    )
+    op.create_index(
+        op.f("ix_book_recommendations_search_job_id"),
+        "book_recommendations",
+        ["search_job_id"],
+        unique=False,
+    )
+    op.create_foreign_key(
+        None,
+        "book_recommendations",
+        "search_jobs",
+        ["search_job_id"],
+        ["id"],
+        ondelete="CASCADE",
+    )
+    op.drop_column("book_recommendations", "search_history_id")
 
     # 3. Now safe to drop search_history — nothing references it anymore
-    op.drop_index(op.f('ix_search_history_created_at'), table_name='search_history')
-    op.drop_index(op.f('ix_search_history_id'), table_name='search_history')
-    op.drop_index(op.f('ix_search_history_updated_at'), table_name='search_history')
-    op.drop_table('search_history')
+    op.drop_index(op.f("ix_search_history_created_at"), table_name="search_history")
+    op.drop_index(op.f("ix_search_history_id"), table_name="search_history")
+    op.drop_index(op.f("ix_search_history_updated_at"), table_name="search_history")
+    op.drop_table("search_history")
 
 
 def downgrade() -> None:
     """Downgrade schema."""
     # ### commands auto generated by Alembic - please adjust! ###
-    op.add_column('book_recommendations', sa.Column('search_history_id', sa.UUID(), autoincrement=False, nullable=False))
-    op.drop_constraint(None, 'book_recommendations', type_='foreignkey')
-    op.create_foreign_key(op.f('book_recommendations_search_history_id_fkey'), 'book_recommendations', 'search_history', ['search_history_id'], ['id'], ondelete='CASCADE')
-    op.drop_index(op.f('ix_book_recommendations_search_job_id'), table_name='book_recommendations')
-    op.create_index(op.f('ix_book_recommendations_search_history_id'), 'book_recommendations', ['search_history_id'], unique=False)
-    op.drop_column('book_recommendations', 'search_job_id')
-    op.create_table('search_history',
-    sa.Column('user_id', sa.UUID(), autoincrement=False, nullable=False),
-    sa.Column('query', sa.TEXT(), autoincrement=False, nullable=False),
-    sa.Column('id', sa.UUID(), autoincrement=False, nullable=False),
-    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), autoincrement=False, nullable=False),
-    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), autoincrement=False, nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('search_history_user_id_fkey')),
-    sa.PrimaryKeyConstraint('id', name=op.f('search_history_pkey'))
+    op.add_column(
+        "book_recommendations",
+        sa.Column("search_history_id", sa.UUID(), autoincrement=False, nullable=False),
     )
-    op.create_index(op.f('ix_search_history_updated_at'), 'search_history', ['updated_at'], unique=False)
-    op.create_index(op.f('ix_search_history_id'), 'search_history', ['id'], unique=False)
-    op.create_index(op.f('ix_search_history_created_at'), 'search_history', ['created_at'], unique=False)
-    op.drop_index(op.f('ix_search_jobs_user_id'), table_name='search_jobs')
-    op.drop_index(op.f('ix_search_jobs_updated_at'), table_name='search_jobs')
-    op.drop_index(op.f('ix_search_jobs_id'), table_name='search_jobs')
-    op.drop_index(op.f('ix_search_jobs_created_at'), table_name='search_jobs')
-    op.drop_table('search_jobs')
+    op.drop_constraint(None, "book_recommendations", type_="foreignkey")
+    op.create_foreign_key(
+        op.f("book_recommendations_search_history_id_fkey"),
+        "book_recommendations",
+        "search_history",
+        ["search_history_id"],
+        ["id"],
+        ondelete="CASCADE",
+    )
+    op.drop_index(
+        op.f("ix_book_recommendations_search_job_id"), table_name="book_recommendations"
+    )
+    op.create_index(
+        op.f("ix_book_recommendations_search_history_id"),
+        "book_recommendations",
+        ["search_history_id"],
+        unique=False,
+    )
+    op.drop_column("book_recommendations", "search_job_id")
+    op.create_table(
+        "search_history",
+        sa.Column("user_id", sa.UUID(), autoincrement=False, nullable=False),
+        sa.Column("query", sa.TEXT(), autoincrement=False, nullable=False),
+        sa.Column("id", sa.UUID(), autoincrement=False, nullable=False),
+        sa.Column(
+            "created_at",
+            postgresql.TIMESTAMP(timezone=True),
+            autoincrement=False,
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            postgresql.TIMESTAMP(timezone=True),
+            autoincrement=False,
+            nullable=True,
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"], ["users.id"], name=op.f("search_history_user_id_fkey")
+        ),
+        sa.PrimaryKeyConstraint("id", name=op.f("search_history_pkey")),
+    )
+    op.create_index(
+        op.f("ix_search_history_updated_at"),
+        "search_history",
+        ["updated_at"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_search_history_id"), "search_history", ["id"], unique=False
+    )
+    op.create_index(
+        op.f("ix_search_history_created_at"),
+        "search_history",
+        ["created_at"],
+        unique=False,
+    )
+    op.drop_index(op.f("ix_search_jobs_user_id"), table_name="search_jobs")
+    op.drop_index(op.f("ix_search_jobs_updated_at"), table_name="search_jobs")
+    op.drop_index(op.f("ix_search_jobs_id"), table_name="search_jobs")
+    op.drop_index(op.f("ix_search_jobs_created_at"), table_name="search_jobs")
+    op.drop_table("search_jobs")
     # ### end Alembic commands ###

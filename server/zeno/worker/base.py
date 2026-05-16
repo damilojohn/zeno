@@ -23,14 +23,13 @@ class SQSWorker(ABC):
     def __init__(self) -> None:
         self._shutdown = False
         self._engine = create_async_engine(settings.database_url)
-        self.session_maker = async_sessionmaker(
-            self._engine, expire_on_commit=False
+        self.session_maker = async_sessionmaker(self._engine, expire_on_commit=False)
+        self._sqs = boto3.client(
+            "sqs",
+            region_name=settings.aws_region,
+            aws_access_key_id=settings.aws_access_key_id,
+            aws_secret_access_key=settings.aws_secret_key,
         )
-        self._sqs = boto3.client("sqs",
-                                 region_name=settings.aws_region,
-                                 aws_access_key_id=settings.aws_access_key_id,
-                                 aws_secret_access_key=settings.aws_secret_key
-                                    )
 
     @abstractmethod
     async def process_message(self, body: dict, db: AsyncSession) -> None:

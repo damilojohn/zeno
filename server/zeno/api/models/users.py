@@ -23,32 +23,46 @@ class User(RecordModel):
     hashed_password: Mapped[str] = mapped_column(String(256), nullable=True)
 
     reset_tokens = relationship(
-        "ResetTokens", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "ResetTokens",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     search_jobs = relationship(
-        "SearchJob", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "SearchJob",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     book_recommendations = relationship(
-        "BookRecommendation", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "BookRecommendation",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     reading_history = relationship(
-        "ReadingHistory", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "ReadingHistory",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     interests = relationship(
-        "UserInterest", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "UserInterest",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     topic_recommendations = relationship(
-        "TopicRecommendation", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "TopicRecommendation",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     subscription = relationship(
-        "Subscription", back_populates="user",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "Subscription",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
         uselist=False,  # one-to-one
     )
 
@@ -61,6 +75,8 @@ class ResetTokens(RecordModel):
     )
     token_hash: Mapped[str] = mapped_column(String(64))
     to_expire: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True), nullable=False, default=current_time,
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        default=current_time,
     )
     user = relationship("User", back_populates="reset_tokens")

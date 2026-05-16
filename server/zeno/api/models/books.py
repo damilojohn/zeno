@@ -30,12 +30,16 @@ class Book(RecordModel):
     genres: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String), nullable=True)
 
     recommendations = relationship(
-        "BookRecommendation", back_populates="book",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "BookRecommendation",
+        back_populates="book",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     reading_history = relationship(
-        "ReadingHistory", back_populates="book",
-        cascade="all, delete-orphan", passive_deletes=True,
+        "ReadingHistory",
+        back_populates="book",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
 

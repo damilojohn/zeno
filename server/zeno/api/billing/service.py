@@ -21,17 +21,17 @@ Flow:
 """
 
 import stripe
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zeno.api.core.config import Settings
-from zeno.api.core.utils import LOG
 
 settings = Settings()
 stripe.api_key = settings.stripe_secret_key
 
 
-async def create_checkout_session(price_id: str, user_id: str, user_email: str, db: AsyncSession) -> str:
+async def create_checkout_session(
+    price_id: str, user_id: str, user_email: str, db: AsyncSession
+) -> str:
     """
     Creates a Stripe Checkout session and returns the URL.
 
@@ -57,7 +57,9 @@ async def create_portal_session(user_id: str, db: AsyncSession) -> str:
     raise NotImplementedError
 
 
-async def handle_webhook(payload: bytes, stripe_signature: str, db: AsyncSession) -> None:
+async def handle_webhook(
+    payload: bytes, stripe_signature: str, db: AsyncSession
+) -> None:
     """
     Verifies and processes a Stripe webhook event.
 

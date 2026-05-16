@@ -3,6 +3,12 @@ import os
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
+# Import all models so autogenerate can detect them
+from zeno.api.models.base import Base  # noqa: F401
+import zeno.api.models.users  # noqa: F401
+import zeno.api.models.books  # noqa: F401
+import zeno.api.models.search  # noqa: F401
+
 config = context.config
 
 # Read DATABASE_URL from environment, stripping async driver prefix for alembic
@@ -14,11 +20,6 @@ if database_url:
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Import all models so autogenerate can detect them
-from zeno.api.models.base import Base
-import zeno.api.models.users   # noqa: F401
-import zeno.api.models.books   # noqa: F401
-import zeno.api.models.search  # noqa: F401
 
 target_metadata = Base.metadata
 

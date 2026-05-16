@@ -81,10 +81,7 @@ async def form_login(
 ):
     user = LoginRequest(email=data.username, password=data.password)
     result = await authenticate_user(user, session)
-    return JSONResponse(
-        status_code=200,
-        content=result.model_dump()
-    )
+    return JSONResponse(status_code=200, content=result.model_dump())
 
 
 @router.post("/refresh", response_model=ApiResponse[TokenResponse])
@@ -107,7 +104,9 @@ async def new_password(
     request: PasswordResetRequest,
     db_session: AsyncSession = Depends(get_async_db_session),
 ):
-    msg = await create_new_password(request.new_password, request.reset_token, db_session)
+    msg = await create_new_password(
+        request.new_password, request.reset_token, db_session
+    )
     return ApiResponse(msg=str(msg) if msg else "Password reset failed")
 
 

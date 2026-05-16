@@ -24,10 +24,17 @@ class Subscription(RecordModel):
     __tablename__ = "subscriptions"
 
     user_id: Mapped[UUID] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True, unique=True
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+        unique=True,
     )
-    stripe_customer_id: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, index=True)
-    stripe_subscription_id: Mapped[str] = mapped_column(String(64), nullable=True, unique=True, index=True)
+    stripe_customer_id: Mapped[str] = mapped_column(
+        String(64), nullable=False, unique=True, index=True
+    )
+    stripe_subscription_id: Mapped[str] = mapped_column(
+        String(64), nullable=True, unique=True, index=True
+    )
     plan: Mapped[Plan] = mapped_column(
         SAEnum(Plan, name="plan"), nullable=False, default=Plan.free
     )

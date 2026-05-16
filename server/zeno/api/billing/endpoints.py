@@ -53,7 +53,9 @@ async def billing_portal(
     )
 
 
-@router.post("/webhook", response_model=ApiResponse[None], status_code=status.HTTP_200_OK)
+@router.post(
+    "/webhook", response_model=ApiResponse[None], status_code=status.HTTP_200_OK
+)
 async def stripe_webhook(
     request: Request,
     db: AsyncSession = Depends(get_async_db_session),

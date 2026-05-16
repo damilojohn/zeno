@@ -25,7 +25,9 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
         sa.Column("email", sa.String(320), nullable=False, index=True, unique=True),
         sa.Column("email_verified", sa.Boolean(), nullable=False, default=False),
@@ -36,9 +38,16 @@ def upgrade() -> None:
     op.create_table(
         "PasswordResetTokens",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
-        sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "user_id",
+            sa.Uuid(),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("token_hash", sa.String(64), nullable=False),
         sa.Column("to_expire", sa.TIMESTAMP(timezone=True), nullable=False),
     )
@@ -46,7 +55,9 @@ def upgrade() -> None:
     op.create_table(
         "books",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
         sa.Column("title", sa.String(512), nullable=False, index=True),
         sa.Column("author", sa.String(256), nullable=False, index=True),
@@ -63,10 +74,24 @@ def upgrade() -> None:
     op.create_table(
         "reading_history",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
-        sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True),
-        sa.Column("book_id", sa.Uuid(), sa.ForeignKey("books.id", ondelete="CASCADE"), nullable=False, index=True),
+        sa.Column(
+            "user_id",
+            sa.Uuid(),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
+        sa.Column(
+            "book_id",
+            sa.Uuid(),
+            sa.ForeignKey("books.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
         sa.Column("read_at", sa.TIMESTAMP(timezone=True), nullable=True),
         sa.Column("rating", sa.Integer(), nullable=True),
     )
@@ -74,7 +99,9 @@ def upgrade() -> None:
     op.create_table(
         "search_history",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
         sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("query", sa.Text(), nullable=False),
@@ -83,11 +110,31 @@ def upgrade() -> None:
     op.create_table(
         "book_recommendations",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
-        sa.Column("search_history_id", sa.Uuid(), sa.ForeignKey("search_history.id", ondelete="CASCADE"), nullable=False, index=True),
-        sa.Column("book_id", sa.Uuid(), sa.ForeignKey("books.id", ondelete="CASCADE"), nullable=False, index=True),
-        sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True),
+        sa.Column(
+            "search_history_id",
+            sa.Uuid(),
+            sa.ForeignKey("search_history.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
+        sa.Column(
+            "book_id",
+            sa.Uuid(),
+            sa.ForeignKey("books.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
+        sa.Column(
+            "user_id",
+            sa.Uuid(),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
         sa.Column("relevance_score", sa.Float(), nullable=True),
         sa.Column("recommendation_order", sa.Integer(), nullable=False, default=0),
     )
@@ -95,9 +142,17 @@ def upgrade() -> None:
     op.create_table(
         "user_interests",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
-        sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True),
+        sa.Column(
+            "user_id",
+            sa.Uuid(),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
         sa.Column("topic", sa.String(256), nullable=False, index=True),
         sa.Column("weight", sa.Float(), nullable=False, default=1.0),
     )
@@ -105,9 +160,17 @@ def upgrade() -> None:
     op.create_table(
         "topic_recommendations",
         sa.Column("id", sa.Uuid(), primary_key=True, index=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), nullable=False, index=True
+        ),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), nullable=True, index=True),
-        sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True),
+        sa.Column(
+            "user_id",
+            sa.Uuid(),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
+        ),
         sa.Column("topic", sa.String(256), nullable=False, index=True),
         sa.Column("score", sa.Float(), nullable=False, default=0.0),
     )
