@@ -4,13 +4,13 @@ from uuid import UUID
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from zeno.api.core.config import Settings
 from zeno.api.core.utils import LOG
+from zeno.api.core.exceptions import NotFoundError
 from zeno.api.models.search import SearchJob, JobStatus, BookRecommendation
 
 settings = Settings()
@@ -38,7 +38,6 @@ async def enqueue_search(query: str, user_id: UUID, db: AsyncSession) -> SearchJ
                 }),
             )
         except (BotoCoreError, ClientError) as e:
-            # Mark failed immediately if we can't queue — don't silently drop
             job.status = JobStatus.failed
             job.error_message = f"Failed to enqueue job: {e}"
             await db.commit()
@@ -59,10 +58,7 @@ async def get_job(job_id: UUID, user_id: UUID, db: AsyncSession) -> SearchJob:
     )
     job = result.scalar_one_or_none()
     if not job:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Job not found",
-        )
+        raise NotFoundError("Search job not found")
     return job
 
 

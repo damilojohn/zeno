@@ -1,7 +1,7 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, status, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zeno.api.user.schemas import (
@@ -11,15 +11,14 @@ from zeno.api.user.schemas import (
     RegisterResponse,
     RefreshRequest,
     TokenResponse,
-    ForgotPasswordRequest,
-    PasswordResetRequest,
-    PasswordResetResponse,
-    ResetTokenResponse,
     GoogleAuthRequest,
     GoogleAuthResponse,
+    ForgotPasswordRequest,
+    PasswordResetRequest,
 )
-
 from zeno.api.core.db import get_async_db_session
+from zeno.api.core.responses import ApiResponse
+from zeno.api.core.exceptions import InternalServerError
 from zeno.api.user.service import (
     get_current_user,
     add_new_user,
@@ -34,127 +33,87 @@ from zeno.api.core.email import send_test_email
 router = APIRouter(prefix="/v2/auth", tags=["users"])
 
 
-@router.get("/heartbeat")
+@router.get("/heartbeat", response_model=ApiResponse[None])
 def heartbeat():
-    """
-    HealthCheck endpoint
-    """
-    resp = {"status": "ok"}
-    return JSONResponse(status_code=200, content=resp)
+    return ApiResponse(msg="ok")
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/me", response_model=ApiResponse[UserResponse])
 async def get_user_profile(user: UserResponse = Depends(get_current_user)):
-    """
-    Get the current user's profile.
-    """
-    return user
+    return ApiResponse(data=user)
 
 
 @router.post(
-    "/sign-up", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
+    "/sign-up",
+    response_model=ApiResponse[RegisterResponse],
+    status_code=status.HTTP_201_CREATED,
 )
 async def register_user(
     user: UserCreate, session: AsyncSession = Depends(get_async_db_session)
 ):
-    """
-    Register a new user with email and password.
-
-    Args:
-    user: UserCreate Object
-    session: db_session
-
-    Returns:
-    RegisterResponse
-    """
-    try:
-        new_user = await add_new_user(user, session)
-        return new_user
-    except Exception as e:
-        raise e
+    result = await add_new_user(user, session)
+    return ApiResponse(msg="User created successfully", data=result)
 
 
-@router.post("/login", response_model=TokenResponse, status_code=200)
+@router.post("/login", response_model=ApiResponse[TokenResponse])
 async def login(
     login_data: LoginRequest, session: AsyncSession = Depends(get_async_db_session)
 ):
-    """
-    Login with email and password.
-
-    Args:
-
-    login_data: LoginRequest
-
-    Returns:
-    TokenResponse : access_token and refresh_token
-
-    """
-    return await authenticate_user(login_data, session)
+    result = await authenticate_user(login_data, session)
+    return ApiResponse(msg="Login successful", data=result)
 
 
-@router.post("/google", response_model=GoogleAuthResponse, status_code=200)
+@router.post("/google", response_model=ApiResponse[GoogleAuthResponse])
 async def google_auth(
     auth_request: GoogleAuthRequest,
     session: AsyncSession = Depends(get_async_db_session),
 ):
-    """Endpoint for authenticating users with Google Oauth"""
-    return handle_google_oauth(
+    result = await handle_google_oauth(
         auth_request.id_token, auth_request.redirect_uri, session
     )
+    return ApiResponse(msg="Authenticated successfully", data=result)
 
 
-@router.post("/form-login", response_model=TokenResponse, status_code=200)
+@router.post("/form-login", response_model=ApiResponse[TokenResponse])
 async def form_login(
     data: Annotated[OAuth2PasswordRequestForm, Depends()],
     session: AsyncSession = Depends(get_async_db_session),
 ):
-    """ """
     user = LoginRequest(email=data.username, password=data.password)
-    return await authenticate_user(user, session)
+    result = await authenticate_user(user, session)
+    return JSONResponse(
+        status_code=200,
+        content=result.model_dump()
+    )
 
 
-@router.post("/refresh", response_model=TokenResponse, status_code=200)
+@router.post("/refresh", response_model=ApiResponse[TokenResponse])
 def refresh_token(request: RefreshRequest):
-    """
-    Refresh token endpoint. Validates refresh token
-
-    """
-    token = request.refresh_token
-    return get_refresh_token(token)
+    result = get_refresh_token(request.refresh_token)
+    return ApiResponse(msg="Token refreshed", data=result)
 
 
-@router.post("/forgot-password", response_model=ResetTokenResponse, status_code=200)
+@router.post("/forgot-password", response_model=ApiResponse[None])
 async def forgot_password(
     request: ForgotPasswordRequest,
     db_session: AsyncSession = Depends(get_async_db_session),
 ):
-    """Generates password reset mail and token"""
-    return await reset_password(request.email, db_session)
+    result = await reset_password(request.email, db_session)
+    return ApiResponse(msg=result.msg)
 
 
-@router.post("/password-reset", response_model=PasswordResetResponse, status_code=200)
+@router.post("/password-reset", response_model=ApiResponse[None])
 async def new_password(
     request: PasswordResetRequest,
     db_session: AsyncSession = Depends(get_async_db_session),
 ):
-    """Verifies password reset token and creates new password"""
-    msg = await create_new_password(
-        request.new_password, request.reset_token, db_session
-    )
-    if msg:
-        return PasswordResetResponse(msg=str(msg))
-    else:
-        return PasswordResetResponse(msg="failed to reset password")
+    msg = await create_new_password(request.new_password, request.reset_token, db_session)
+    return ApiResponse(msg=str(msg) if msg else "Password reset failed")
 
 
-@router.post("/test-email", status_code=200)
+@router.post("/test-email", response_model=ApiResponse[None])
 async def test_email(email: str):
-    """Test email functionality"""
     success = await send_test_email(email)
-    if success:
-        return {"message": f"Test email sent successfully to {email}"}
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to send test email to {email}",
-        )
+    if not success:
+        raise InternalServerError(f"Failed to send test email to {email}")
+    return ApiResponse(msg=f"Test email sent to {email}")

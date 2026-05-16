@@ -46,6 +46,11 @@ class User(RecordModel):
         "TopicRecommendation", back_populates="user",
         cascade="all, delete-orphan", passive_deletes=True,
     )
+    subscription = relationship(
+        "Subscription", back_populates="user",
+        cascade="all, delete-orphan", passive_deletes=True,
+        uselist=False,  # one-to-one
+    )
 
 
 class ResetTokens(RecordModel):

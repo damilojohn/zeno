@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import HTTPException, RequestValidationError
 import uvicorn
 
 from zeno.api.core.db import (
@@ -15,9 +16,16 @@ from zeno.api.core.db import (
 )
 from zeno.api.core.utils import LOG
 from zeno.api.core.config import Settings
+from zeno.api.core.exceptions import (
+    AppException,
+    app_exception_handler,
+    http_exception_handler,
+    validation_exception_handler,
+)
 
 from zeno.api.search.endpoints import router as search_router
 from zeno.api.user.endpoints import router as user_router
+from zeno.api.billing.endpoints import router as billing_router
 
 
 settings = Settings()
@@ -63,11 +71,14 @@ async def lifespan(
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Zeno's Backend", lifespan=lifespan)
-    # Add exception handlers later
+
+    app.add_exception_handler(AppException, app_exception_handler)
+    app.add_exception_handler(HTTPException, http_exception_handler)
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
     configure_cors(app, settings)
     app.include_router(search_router)
-
+    app.include_router(billing_router)
     app.include_router(user_router)
 
     return app

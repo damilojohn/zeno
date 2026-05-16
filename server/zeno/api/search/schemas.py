@@ -10,7 +10,7 @@ class SearchRequest(BaseModel):
 
 
 class SearchJobResponse(BaseModel):
-    job_id: UUID4
+    id: UUID4
     status: JobStatus
     query: str
     created_at: datetime

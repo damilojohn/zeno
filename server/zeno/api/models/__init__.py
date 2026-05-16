@@ -7,6 +7,7 @@ from zeno.api.models.search import (
     UserInterest,
     TopicRecommendation,
 )
+from zeno.api.models.billing import Subscription, Plan, SubscriptionStatus
 
 __all__ = [
     "User",
@@ -18,4 +19,7 @@ __all__ = [
     "BookRecommendation",
     "UserInterest",
     "TopicRecommendation",
+    "Subscription",
+    "Plan",
+    "SubscriptionStatus",
 ]

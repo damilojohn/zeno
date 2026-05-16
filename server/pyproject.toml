@@ -47,6 +47,8 @@ dependencies = [
     "snakeviz>=2.2.2",
     "psycopg2-binary>=2.9.11",
     "fire>=0.7.1",
+    "boto3>=1.40.21",
+    "stripe>=15.1.0",
 ]
 
 [build-system]
